@@ -18,6 +18,8 @@ export default function Home(){
 	const [isLoading, setIsLoading] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
 	const [emailRecover, setEmailRecover] = useState('')
+	const [isSent, setIsSent] = useState(false)
+	const [recoverMsg, setRecoverMsg] = useState('')
 
 	const navigate = useNavigate()
 
@@ -25,7 +27,7 @@ export default function Home(){
 		e.preventDefault()
 		setIsLoading(true)
 		setAuth(null)
-		const URL = `http://localhost:8000/adm/login_adm`
+		const URL = `http://192.168.43.58:8000/adm/login_adm`
 
 		const dados = {
 			'email': email,
@@ -57,7 +59,7 @@ export default function Home(){
 		e.preventDefault()
 		setAuthSignin(null)
 		setIsLoading(true)
-		const URL = `http://localhost:8000/adm/signin_adm`
+		const URL = `http://192.168.43.58:8000/adm/signin_adm`
 
 		const dados = {
 			'nome': nomeSignIn,
@@ -91,8 +93,31 @@ export default function Home(){
 
 	function handlerRecoverPass(e){
 		e.preventDefault();
+		
+		const dados = {
+			to: emailRecover,
+			subject: "Recuperação de senha",
+			html: '<p>Olá, clique <a href="http://192.168.43.58:3000/recover-pass">aqui</a> para recuperar sua senha.</p>'
+		}
 
-		alert(emailRecover)
+		const URL = 'http://192.168.43.58:8000/user/verify_email'
+
+		fetch(URL, {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json'
+			},
+			body: JSON.stringify(dados)
+		}).then(res=> res.json()).then(json => {
+			if(json.status == 200){
+				setIsSent(true)
+				setRecoverMsg(json.msg)
+				setEmailRecover('')
+				setTimeout(()=>setIsOpen(!isOpen), 3000)
+			}else{
+				setRecoverMsg(json.msg)
+			}
+		})
 	}
 
 	return(
@@ -212,13 +237,15 @@ export default function Home(){
 						className="recover_input"
 						onChange={(e)=>setEmailRecover(e.target.value)}
 						value={emailRecover}
+						required
 						autoFocus
 					/>
 
 					<button className="btn btn-primary mt-2">Enviar email de recuperação</button>
 
-					<p className="mt-4">Enviaremos um link de recuperação para o email que inserir!</p>
+					{isSent? <p className="text-center" style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
 				</form>
+					
 			</Modal>
 		</section>
 	)
