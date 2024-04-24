@@ -1,0 +1,31 @@
+#coment-form{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 50%;
+    margin: 20px 0px;
+}
+
+.coment-form-input{
+    outline: none;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.089);
+    width: 60%;
+}
+
+#coment-btn{
+    width: 60%;
+}
+
+@media screen and (max-width: 900px){
+    #coment-form{
+        width: 100%;
+    }
+    .coment-form-input{
+        width: 100%;
+    }
+    
+    #coment-btn{
+        width: 100%;
+    }
+}

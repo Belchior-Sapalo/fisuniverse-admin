@@ -1,0 +1,49 @@
+#ver-post-section{
+    padding-top: 70px;
+}
+
+#back-btn-container{
+    margin: 10px 0px;
+}
+
+#back-btn{
+    background:none;
+    border: none;
+}
+.coment{
+    margin-bottom: 8px;
+}
+
+.coment-header{
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+}
+.name_delete{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.coment-data{
+    font-size: 12px;
+}
+
+.coment-adm-options{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.coment-adm-options-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+}
+
+.coment-content-container{
+    background-color: aliceblue;
+    padding: 5px 10px;
+}

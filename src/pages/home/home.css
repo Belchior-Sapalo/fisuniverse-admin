@@ -1,0 +1,98 @@
+#login_sigin_sec{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(239, 239, 239);
+}
+
+#login_sigin_form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    border-radius: 8px;
+    height: 500px;
+}
+
+#login-res{
+	color: red;
+	padding-bottom: 8px;
+}
+
+#adm-form-btn:hover{
+	color: var(--color-4);
+}
+
+.adm-input{
+    outline: none;
+    margin: 20px;
+    padding: 15px;
+	border-radius: 5px;
+    border: none;
+    width: 90%;
+}
+
+.login_signin_text{
+    margin: 0;
+}
+
+.submit-btn{
+    height: 50px;
+    margin: 8px 0px;
+    color: white;
+    font-family: var(--bold-font);
+	width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.signin_login_option{
+    cursor: pointer;
+    width: 90%;
+    margin-top: 8px;
+}
+
+.repor_pass_link{
+    cursor: pointer;
+    width: 90%;
+}
+
+#recover_pass_form{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.recover_input{
+    outline: none;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+@media screen and (max-width: 718px){
+	#login_sigin_sec{
+        align-items: start;
+        padding-top: 25%;
+    }
+    #login_sigin_form{
+        width: 90%;
+        height: 300px;
+        border: none;
+    }
+
+    .adm-input{
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .signin_login_option, .repor_pass_link{
+        font-size: 14px;
+    }
+}
+
