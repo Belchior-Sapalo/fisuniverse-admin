@@ -4,6 +4,8 @@ import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
 import Loader from "../../components/loading/loader";
 import Modal from "../../components/modal/modal";
+import Btn from '../../components/btn/Btn';
+import { MdAttachEmail, MdEmail } from "react-icons/md";
 
 export default function Home(){
 	const [email, setEmail] = useState('')
@@ -16,6 +18,7 @@ export default function Home(){
 	const [isOpenLoginForm, setIsOpenLoginForm] = useState(true)
 	const [isOpenSignInForm, setIsOpenSignInForm] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingMailSend, setIsLoadingMailSend] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
 	const [emailRecover, setEmailRecover] = useState('')
 	const [isSent, setIsSent] = useState(false)
@@ -91,16 +94,43 @@ export default function Home(){
 		})
 	}
 
+	const recoverHtml = 
+	`<html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+				background-color: rgb(239, 239, 239);
+            }
+            h1 {
+                color: #333;
+            }
+            p {
+                color: #666;
+            }
+			a {
+				color: green,
+				text-decoration: none
+			}
+        </style>
+    </head>
+    <body>
+        <h1>Redefinir senha</h1>
+        <p>Atendendo o seu pedido de redefinição de senha, iremos ajudá-lo a voltar a ter acesso a sua conta</p>
+		<p>Para continuar clique em <a href="http://192.168.43.58:3000/recover-pass">Redefinir senha</a></p>
+    </body>
+    </html>`
+
 	function handlerRecoverPass(e){
 		e.preventDefault();
-		
+		setIsLoadingMailSend(true)
 		const dados = {
 			to: emailRecover,
 			subject: "Recuperação de senha",
-			html: '<p>Olá, clique <a href="http://192.168.43.58:3000/recover-pass">aqui</a> para recuperar sua senha.</p>'
+			html: recoverHtml
 		}
 
-		const URL = 'http://192.168.43.58:8000/user/verify_email'
+		const URL = 'http://192.168.43.58:8000/adm/verify_email'
 
 		fetch(URL, {
 			method: 'POST',
@@ -110,11 +140,14 @@ export default function Home(){
 			body: JSON.stringify(dados)
 		}).then(res=> res.json()).then(json => {
 			if(json.status == 200){
+				setIsLoadingMailSend(false)
 				setIsSent(true)
 				setRecoverMsg(json.msg)
 				setEmailRecover('')
+
 				setTimeout(()=>setIsOpen(!isOpen), 3000)
 			}else{
+				setIsLoadingMailSend(false)
 				setRecoverMsg(json.msg)
 			}
 		})
@@ -144,18 +177,8 @@ export default function Home(){
 					 value={senha} 
 					 className="adm-input"
 				/>
-
-
-				<button 
-					disabled={isLoading} 
-					className="btn btn-success submit-btn" 
-					style={{justifyContent: isLoading? "space-between": 'center'}}
-				>
-					<Loader isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)}/>
-					<p className="login_signin_text">Entrar</p>
-					<p></p>				
-				</button>
 				
+				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
 				<p 
 					className="signin_login_option" 
 					onClick={()=>{
@@ -205,15 +228,7 @@ export default function Home(){
 					className="adm-input"
 				/>
 
-				<button 
-					disabled={isLoading} 
-					className="btn btn-success submit-btn"  
-					style={{justifyContent: isLoading? "space-between": 'center'}}
-				>
-					<Loader isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)}/>
-					<p className="login_signin_text">Criar conta</p>
-					<p></p>				
-				</button>
+				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Criar conta"/>
 				<p 
 					className="signin_login_option"  
 					onClick={()=>{
@@ -230,7 +245,9 @@ export default function Home(){
 
 			<Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
 				<form id="recover_pass_form" onSubmit={(e)=>handlerRecoverPass(e)}>
-					<h4>Repor palavra passe</h4>
+					<div id="form-recover-header">
+						<h4>Repor palavra passe <span><MdAttachEmail/></span></h4>
+					</div>
 					<input 
 						placeholder="Insira seu email" 
 						type="email"
@@ -241,9 +258,9 @@ export default function Home(){
 						autoFocus
 					/>
 
-					<button className="btn btn-primary mt-2">Enviar email de recuperação</button>
+					<Btn isLoading={isLoadingMailSend} setIsLoading={()=>setIsLoadingMailSend(!isLoadingMailSend)} value="Enviar email de recuperação"/>
 
-					{isSent? <p className="text-center" style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
+					{isSent? <p style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
 				</form>
 					
 			</Modal>

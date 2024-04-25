@@ -1,0 +1,14 @@
+.submit-btn{
+    height: 50px;
+    margin: 8px auto;
+    color: white;
+    font-family: var(--bold-font);
+	width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.value{
+    margin: 0;
+}

@@ -1,0 +1,48 @@
+#recover-pass-sec{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(239, 239, 239);
+}
+
+#recover-pass-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    border-radius: 8px;
+    height: 500px;
+}
+
+#recover-pass-form > input{
+    outline: none;
+    margin: 20px;
+    padding: 15px;
+	border-radius: 5px;
+    border: none;
+    width: 90%;
+}
+
+#submit-btn{
+    width: 100%;
+    background-color: red;
+}
+
+@media screen and (max-width: 718px){
+	#recover-pass-sec{
+        align-items: start;
+        padding-top: 25%;
+    }
+    #recover-pass-form{
+        width: 90%;
+        height: 300px;
+        border: none;
+    }
+
+    #recover-pass-form > input{
+        padding: 10px;
+        margin: 10px;
+    }
+
+}

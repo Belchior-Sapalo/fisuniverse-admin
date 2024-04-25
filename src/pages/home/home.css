@@ -33,22 +33,6 @@
     width: 90%;
 }
 
-.login_signin_text{
-    margin: 0;
-}
-
-.submit-btn{
-    height: 50px;
-    margin: 8px 0px;
-    color: white;
-    font-family: var(--bold-font);
-	width: 90%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-
 .signin_login_option{
     cursor: pointer;
     width: 90%;
@@ -64,8 +48,12 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+    gap: 15px;
+}
+
+#form-recover-header{
+    display: flex;
+    justify-content: center;
 }
 
 .recover_input{
@@ -73,6 +61,8 @@
     border: none;
     padding: 10px;
     border-radius: 8px;
+    width: 90%;
+    margin: auto;
 }
 
 @media screen and (max-width: 718px){
