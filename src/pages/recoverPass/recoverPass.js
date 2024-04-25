@@ -1,21 +1,29 @@
 import './recoverPass.css'
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import { useNavigate } from 'react-router-dom'
-import Loader from '../../components/loading/loader'
 import Btn from '../../components/btn/Btn'
+
 
 export default function RecoverPass(){
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
+    const [token, setToken] = useState('')
     const [newPass, setNewPass] = useState('')
     const [confirmPass, setConfirmPass] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [res, setRes] = useState('')
+    
+    useEffect(()=>{
+        const queryString = window.location.search;
+        const URLparams = new URLSearchParams(queryString);
+        const token = URLparams.get('q')
+        setToken(token)
+    }, [])
 
     async function handlerRecoverPass(e){
         setIsLoading(true)
         e.preventDefault()
-        const URL = 'http://192.168.43.58:8000/adm/redefinir-senha'
+        const URL = `http://192.168.43.58:8000/adm/redefinir-senha?q=${token}`
         const dados = {
             'email': email,
             'senha': newPass,
@@ -60,7 +68,7 @@ export default function RecoverPass(){
 
                 <Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Redefinir senha"/>
                 
-                {res.status == 200? <p onClick={()=>window.location.replace('/')} style={{color: "green", cursor: "pointer"}}>{res.msg}! Iniciar sessão</p>: <p style={{color: 'red'}}>{res.msg}</p>}
+                {res.status == 200? <p onClick={()=>window.location.replace('/')} style={{color: "green", cursor: "pointer"}}>{res.msg}! Iniciar sessão</p>: <p onClick={()=>window.location.replace('/')} style={{color: 'red', cursor: "pointer"}}>{res.msg}</p>}
             </form>
         </section>
     )

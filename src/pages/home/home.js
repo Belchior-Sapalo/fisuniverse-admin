@@ -94,32 +94,6 @@ export default function Home(){
 		})
 	}
 
-	const recoverHtml = 
-	`<html>
-    <head>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-				background-color: rgb(239, 239, 239);
-            }
-            h1 {
-                color: #333;
-            }
-            p {
-                color: #666;
-            }
-			a {
-				color: green,
-				text-decoration: none
-			}
-        </style>
-    </head>
-    <body>
-        <h1>Redefinir senha</h1>
-        <p>Atendendo o seu pedido de redefinição de senha, iremos ajudá-lo a voltar a ter acesso a sua conta</p>
-		<p>Para continuar clique em <a href="http://192.168.43.58:3000/recover-pass">Redefinir senha</a></p>
-    </body>
-    </html>`
 
 	function handlerRecoverPass(e){
 		e.preventDefault();
@@ -127,7 +101,6 @@ export default function Home(){
 		const dados = {
 			to: emailRecover,
 			subject: "Recuperação de senha",
-			html: recoverHtml
 		}
 
 		const URL = 'http://192.168.43.58:8000/adm/verify_email'
