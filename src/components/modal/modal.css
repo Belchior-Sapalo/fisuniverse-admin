@@ -7,8 +7,9 @@
     left: 0;
     right: 0;
     display: flex;
+    padding-top: 20px;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 #adm-icon-container{
@@ -39,7 +40,7 @@
     background-color: whitesmoke;
     padding: 5px;
     border-radius: 5px;
-    width: 400px;
+    width: 600px;
 }
 
 @media screen and (max-width: 900px){

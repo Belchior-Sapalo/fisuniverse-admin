@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import {useNavigate} from 'react-router-dom'
 import {useState} from 'react'
-import {MdAdminPanelSettings, MdClose} from 'react-icons/md'
 import '../navbar/navbar.css'
 import Modal from "../modal/modal";
 import Cookies from "js-cookie";

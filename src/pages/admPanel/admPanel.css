@@ -38,6 +38,12 @@
     padding: 10px;
 }
 
+.edit-post-form > textarea{
+    height: 350px;
+    resize: none;
+}
+
+
 .edit-post-form-input, .form-add-post-input{
     outline: none;
     padding: 10px;
@@ -54,7 +60,10 @@
     align-items: center;
     gap: 10px;
     padding: 10px 5px;
-    height: 300px;
+}
+
+.form-add-post > textarea{
+    height: 350px;
 }
 
 .add-post-btn{
