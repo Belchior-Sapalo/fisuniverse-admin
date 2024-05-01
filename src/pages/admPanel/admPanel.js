@@ -30,7 +30,7 @@ export default function AdmPanel(){
 
 		fetch(URL)
 		.then((res)=>res.json())
-		.then((json)=>setPosts(json))
+		.then((json)=>setPosts(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))))
 
         setToken(Cookies.get('token'))
 	}, [])
