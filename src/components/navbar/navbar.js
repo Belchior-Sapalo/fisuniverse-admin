@@ -67,7 +67,6 @@ export default function Navbar(){
 	}
 
 	const LogoutBtn = ()=>{
-		const navigate = useNavigate()
 		function logout(){
 			Cookies.remove('token')
 			window.location.replace('/')
