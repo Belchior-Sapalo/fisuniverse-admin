@@ -30,7 +30,7 @@ export default function Home(){
 		e.preventDefault()
 		setIsLoading(true)
 		setAuth(null)
-		const URL = `http://192.168.43.58:8000/adm/login_adm`
+		const URL = `http://localhost:8000/adm/login_adm`
 
 		const dados = {
 			'email': email,
@@ -62,7 +62,7 @@ export default function Home(){
 		e.preventDefault()
 		setAuthSignin(null)
 		setIsLoading(true)
-		const URL = `http://192.168.43.58:8000/adm/signin_adm`
+		const URL = `http://localhost:8000/adm/signin_adm`
 
 		const dados = {
 			'nome': nomeSignIn,
@@ -103,7 +103,7 @@ export default function Home(){
 			subject: "Recuperação de senha",
 		}
 
-		const URL = 'http://192.168.43.58:8000/adm/verify_email'
+		const URL = 'http://localhost:8000/adm/verify_email'
 
 		fetch(URL, {
 			method: 'POST',

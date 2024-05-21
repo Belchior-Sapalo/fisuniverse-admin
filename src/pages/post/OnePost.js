@@ -23,7 +23,7 @@ export default function(){
     }
 
     useEffect(()=>{
-        const URL = `http://192.168.43.58:8000/post/${q}`
+        const URL = `http://localhost:8000/post/${q}`
 
         fetch(URL)
         .then((res)=>res.json())
@@ -33,7 +33,7 @@ export default function(){
     },[])
 
     function deletarComent(autorEmail){
-      const URL = `http://192.168.43.58:8000/adm/apagar_coment/${autorEmail}`
+      const URL = `http://localhost:8000/adm/apagar_coment/${autorEmail}`
 
       fetch(URL, {
         method: 'DELETE',

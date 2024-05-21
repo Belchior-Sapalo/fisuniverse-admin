@@ -26,7 +26,7 @@ export default function AdmPanel(){
 	const nomeAdm = location.state?.nomeAdm;
 
     useEffect(()=>{
-		const URL = 'http://192.168.43.58:8000/verPosts'
+		const URL = 'http://localhost:8000/verPosts'
 
 		fetch(URL)
 		.then((res)=>res.json())
@@ -41,7 +41,7 @@ export default function AdmPanel(){
 
     function reagir(postId){
 		
-		const URL = `http://192.168.43.58:8000/addReaction/${postId}`
+		const URL = `http://localhost:8000/addReaction/${postId}`
 
 		const dados = {
 			'tipo': 'like'
@@ -58,7 +58,7 @@ export default function AdmPanel(){
 	}
 
     function deletarPost(postId){
-        const URL = `http://192.168.43.58:8000/adm/apagar_post/${postId}`
+        const URL = `http://localhost:8000/adm/apagar_post/${postId}`
 
         fetch(URL,{
             method: 'DELETE',
@@ -81,7 +81,7 @@ export default function AdmPanel(){
 
     function editarPost(e){
 		e.preventDefault()
-        const URL = `http://192.168.43.58:8000/adm/atualizar_post/${postToEdit}`
+        const URL = `http://localhost:8000/adm/atualizar_post/${postToEdit}`
 
 				const dados = {
 					'autor': nomeAutor,

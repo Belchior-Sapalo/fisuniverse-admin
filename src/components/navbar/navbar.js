@@ -23,7 +23,7 @@ export default function Navbar(){
 		function publicar(e){
 			e.preventDefault()
 			const token = Cookies.get('token')
-			const URL = 'http://192.168.43.58:8000/adm/adicionar_post'
+			const URL = 'http://localhost:8000/adm/adicionar_post'
 	
 			const dados = {
 				'autor': autor,

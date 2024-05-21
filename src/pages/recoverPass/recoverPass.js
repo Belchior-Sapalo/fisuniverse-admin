@@ -23,7 +23,7 @@ export default function RecoverPass(){
     async function handlerRecoverPass(e){
         setIsLoading(true)
         e.preventDefault()
-        const URL = `http://192.168.43.58:8000/adm/redefinir-senha?q=${token}`
+        const URL = `http://localhost:8000/adm/redefinir-senha?q=${token}`
         const dados = {
             'email': email,
             'senha': newPass,
