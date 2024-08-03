@@ -10,8 +10,17 @@
     background:none;
     border: none;
 }
+
+.post{
+    margin-top: 50px;
+}
 .coment{
     margin-bottom: 8px;
+    padding: 5px 10px;
+}
+
+.coment_info p{
+   margin: 0;
 }
 
 .coment-header{
@@ -19,6 +28,7 @@
     justify-content: space-between;
     gap: 5px;
     align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.085);
 }
 .name_delete{
     display: flex;
@@ -44,6 +54,5 @@
 }
 
 .coment-content-container{
-    background-color: aliceblue;
-    padding: 5px 10px;
+    
 }

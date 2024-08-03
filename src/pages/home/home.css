@@ -15,9 +15,8 @@
     height: 500px;
 }
 
-#login-res{
+.auth-res{
 	color: red;
-	padding-bottom: 8px;
 }
 
 #adm-form-btn:hover{
@@ -36,7 +35,6 @@
 .signin_login_option{
     cursor: pointer;
     width: 90%;
-    margin-top: 8px;
 }
 
 .repor_pass_link{

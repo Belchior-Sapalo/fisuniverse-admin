@@ -10,6 +10,8 @@ import { MdDelete } from "react-icons/md";
 import Modal from "../../components/modal/modal";
 import Msg from "../../components/msg/msg";
 import { useLocation } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns"
+import { ptBR } from 'date-fns/locale';
 
 export default function AdmPanel(){
 	const [posts, setPosts] = useState([])
@@ -24,14 +26,21 @@ export default function AdmPanel(){
 	const [showMsg, setShowMsg] = useState(false)
 	const location = useLocation()
 	const nomeAdm = location.state?.nomeAdm;
+	const API_URL = "http://localhost:8000"
+	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
 
     useEffect(()=>{
-		const URL = 'http://localhost:8000/verPosts'
-
+		const URL = `${API_URL}/verPosts`
 		fetch(URL)
 		.then((res)=>res.json())
-		.then((json)=>setPosts(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))))
-
+		.then((json)=>{
+			if(json.status != 404){
+				setPosts(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+				setHavePostsInDatabase(true)
+			}else{
+				setHavePostsInDatabase(false)
+			}
+		})
         setToken(Cookies.get('token'))
 	}, [])
 
@@ -39,26 +48,8 @@ export default function AdmPanel(){
 		navigate(`/post?q=${postId}`)
 	}
 
-    function reagir(postId){
-		
-		const URL = `http://localhost:8000/addReaction/${postId}`
-
-		const dados = {
-			'tipo': 'like'
-		}
-
-		fetch(URL, {
-			method: 'POST',
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: JSON.stringify(dados)
-		})
-
-	}
-
     function deletarPost(postId){
-        const URL = `http://localhost:8000/adm/apagar_post/${postId}`
+        const URL = `${API_URL}/adm/apagar_post/${postId}`
 
         fetch(URL,{
             method: 'DELETE',
@@ -81,7 +72,7 @@ export default function AdmPanel(){
 
     function editarPost(e){
 		e.preventDefault()
-        const URL = `http://localhost:8000/adm/atualizar_post/${postToEdit}`
+        const URL = `${API_URL}/adm/atualizar_post/${postToEdit}`
 
 				const dados = {
 					'autor': nomeAutor,
@@ -101,11 +92,10 @@ export default function AdmPanel(){
     }
 
 	function formatarData(data){
-		const dateToFormat = new Date(data)
-		const dateFormated = dateToFormat.toLocaleString()
-
-		return dateFormated;
+		const createdAtFormated = formatDistanceToNow(data, { addSuffix: true, locale: ptBR });
+		return createdAtFormated;
 	}
+
     return(
         <section id="admPanel-section">
             <Navbar/>
@@ -113,7 +103,7 @@ export default function AdmPanel(){
             <div id="posts-container" className="container">
 				
 			{ 
-				posts.status? <h4 className="p-4">Sem publicações</h4>:posts.map(post=>{
+				havePostsInDatabase ? posts.map(post=>{
 					return(
 						<div className="post">
                             
@@ -140,10 +130,10 @@ export default function AdmPanel(){
 								{post.content}
 							</div>
 							
-							<button className="btn ver-coments" onClick={()=>verPost(post.id)}><FaMessage/></button>
+							<button className="btn ver-coments" onClick={()=>verPost(post.id)}><FaMessage color="rgba(0, 0, 0, 0.5)"/></button>
 						</div>
 					)
-				})
+				}): <h5 className="p-4">Faça sua primeira publicação!</h5>
 			}
 		</div>
         <Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>

@@ -2,11 +2,11 @@ import {useSearchParams, useNavigate} from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {FaArrowLeft, FaEdit} from 'react-icons/fa'
 import '../post/OnePost.css'
-import Navbar from '../../components/navbar/navbar'
 import ComentForm from '../../components/postComentForm/comentForm'
 import Cookies from 'js-cookie'
 import { MdDelete } from 'react-icons/md'
-// import Msg from '../../components/msg/msg'
+import { formatDistanceToNow } from "date-fns"
+import { ptBR } from 'date-fns/locale';
 
 export default function(){
     const [searchParams] = useSearchParams()
@@ -17,13 +17,14 @@ export default function(){
     const [showMsg, setShowMsg] = useState(false)
     const [coments, setComents] = useState([])
     const q = searchParams.get('q')
+    const API_URL = "http://localhost:8000"
 
     function voltar(){
         navigate(-1)
     }
 
     useEffect(()=>{
-        const URL = `http://localhost:8000/post/${q}`
+        const URL = `${API_URL}/post/${q}`
 
         fetch(URL)
         .then((res)=>res.json())
@@ -33,7 +34,7 @@ export default function(){
     },[])
 
     function deletarComent(autorEmail){
-      const URL = `http://localhost:8000/adm/apagar_coment/${autorEmail}`
+      const URL = `${API_URL}/adm/apagar_coment/${autorEmail}`
 
       fetch(URL, {
         method: 'DELETE',
@@ -46,13 +47,12 @@ export default function(){
     }
 
     function formatarData(data){
-		const dateToFormat = new Date(data)
-		const dateFormated = dateToFormat.toLocaleString()
-
-		return dateFormated;
+		let createdAt = data;
+		const createdAtFormated = formatDistanceToNow(createdAt, { addSuffix: true, locale: ptBR });
+		return createdAtFormated;
 	}
     return(
-        <div className="post">
+        <div className="post container">
             <div id='back-btn-container'>
                 <button id='back-btn' onClick={()=>voltar()}><FaArrowLeft/></button>
             </div>
@@ -64,7 +64,7 @@ export default function(){
                 {post.autor}
             </h5>
             <p className="post-data-create">
-                {formatarData(post.createdAt)}
+                {}
             </p>
             <div className="post-content">
                 {post.content}
@@ -76,13 +76,12 @@ export default function(){
                     <div className="coment">
                         <div className='coment-header'>
                             <div className='coment_info'>
-                                <h5 className="coment-autor">{coment.autorName}</h5>
+                                <p className="coment-email">{coment.autorEmail}</p>
                                 <p className="coment-data">{formatarData(coment.createdAt)}</p>
                             </div>
                             <button className="btn btn-danger coment-adm-options-btn" onClick={()=>deletarComent(coment.autorEmail)}><MdDelete/></button>
                         </div>
                         <div className='coment-content-container'>
-                            <p className="coment-email">{coment.autorEmail}</p>
                             <p className="coment-content">{coment.content}</p>
                         </div>
                     </div>

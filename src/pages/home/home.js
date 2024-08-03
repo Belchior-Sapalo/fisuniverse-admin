@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import Loader from "../../components/loading/loader";
 import Modal from "../../components/modal/modal";
 import Btn from '../../components/btn/Btn';
-import { MdAttachEmail, MdEmail } from "react-icons/md";
+import { MdAttachEmail, MdError } from "react-icons/md";
 
 export default function Home(){
 	const [email, setEmail] = useState('')
@@ -23,6 +23,7 @@ export default function Home(){
 	const [emailRecover, setEmailRecover] = useState('')
 	const [isSent, setIsSent] = useState(false)
 	const [recoverMsg, setRecoverMsg] = useState('')
+	const API_URL = "http://localhost:8000"
 
 	const navigate = useNavigate()
 
@@ -30,7 +31,7 @@ export default function Home(){
 		e.preventDefault()
 		setIsLoading(true)
 		setAuth(null)
-		const URL = `http://localhost:8000/adm/login_adm`
+		const URL = `${API_URL}/adm/login_adm`
 
 		const dados = {
 			'email': email,
@@ -62,7 +63,7 @@ export default function Home(){
 		e.preventDefault()
 		setAuthSignin(null)
 		setIsLoading(true)
-		const URL = `http://localhost:8000/adm/signin_adm`
+		const URL = `${API_URL}/adm/signin_adm`
 
 		const dados = {
 			'nome': nomeSignIn,
@@ -103,7 +104,7 @@ export default function Home(){
 			subject: "Recuperação de senha",
 		}
 
-		const URL = 'http://localhost:8000/adm/verify_email'
+		const URL = `${API_URL}/adm/verify_email`
 
 		fetch(URL, {
 			method: 'POST',
@@ -152,6 +153,7 @@ export default function Home(){
 				/>
 				
 				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
+				{auth && <p className="text-center auth-res"><MdError size={20} color="red"/> {auth.msg}</p>}
 				<p 
 					className="signin_login_option" 
 					onClick={()=>{
@@ -165,8 +167,6 @@ export default function Home(){
 				<p className="repor_pass_link" onClick={()=>setIsOpen(!isOpen)}>
 					Esqueceu a palavra passe? <span style={{color: "red"}}>Recuperar conta</span>
 				</p>
-				
-				{auth && <p className="text-center" id="login-res">{auth.msg}</p>}
 			</form>
 
 			<form 
@@ -202,6 +202,7 @@ export default function Home(){
 				/>
 
 				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Criar conta"/>
+				{authSignin && <p className="text-center auth-res"><MdError size={20} color="red"/> {authSignin.msg}</p>}
 				<p 
 					className="signin_login_option"  
 					onClick={()=>{
@@ -212,8 +213,6 @@ export default function Home(){
 						setAuth('')}}
 					>Já tem uma conta? <span style={{color: "blue"}}>Iniciar sessão</span>
 				</p>
-
-				{authSignin && <p className="text-center" id="login-res">{authSignin.msg}</p>}
 			</form>
 
 			<Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
@@ -235,7 +234,6 @@ export default function Home(){
 
 					{isSent? <p style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
 				</form>
-					
 			</Modal>
 		</section>
 	)
