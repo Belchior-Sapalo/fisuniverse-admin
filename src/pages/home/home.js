@@ -49,7 +49,7 @@ export default function Home(){
 		.then((json)=>{
 			if(json.status == 200){
 				Cookies.set('token', json.token)
-				navigate(`/painel-adm`, {state: {nomeAdm: json.nome}})
+				navigate(`/painel-adm/posts`, {state: {nomeAdm: json.nome}})
 				setIsLoading(false)
 			}else{
 				setAuth(json)

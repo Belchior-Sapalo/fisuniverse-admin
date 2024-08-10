@@ -3,67 +3,14 @@ import {useState} from 'react'
 import '../navbar/navbar.css'
 import Modal from "../modal/modal";
 import Cookies from "js-cookie";
-import { MdAdd, MdLogout } from "react-icons/md";
+import { MdAdd, MdLogout, MdPostAdd, MdAddLink } from "react-icons/md";
+import {FaBars} from 'react-icons/fa'
 import Msg from "../msg/msg";
+import SidebarItem from "../sidebaritem/sidebarItem";
+import {Link, useNavigate} from 'react-router-dom'
 
-export default function Navbar(){
-	const DooPostBtn = ()=>{
-		const [formPost, setFormPost] = useState(false)
-		const [autor, setAutor] = useState('')
-		const [title, setTitle] = useState('')
-		const [content, setContent] = useState('')
-		const [res, setRes] = useState('')
-		const [showMsg, setShowMsg] = useState(false)
-		const [token, setToken] = useState('')
-		const API_URL = "http://localhost:8000"
-
-		useEffect(()=>{
-			setToken(Cookies.get('token'))
-		}, [])
-	
-		function publicar(e){
-			e.preventDefault()
-			const token = Cookies.get('token')
-			const URL = `${API_URL}/adm/adicionar_post`
-	
-			const dados = {
-				'autor': autor,
-				'title': title,
-				'content': content
-			}
-			fetch(URL, {
-				method: 'POST',
-				headers: {
-					'Authorization': `Bearer ${token}`,
-					'Content-type': 'application/json'
-				},
-				body: JSON.stringify(dados)
-			}).then((res)=>res.json()).then((json)=>setRes(json.msg))
-	
-			setFormPost(false)
-			setShowMsg(true)
-		}
-	
-		return(
-			<div>
-				<button onClick={()=>setFormPost(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
-	
-				<Modal isOpen={formPost} setIsOpen={()=>setFormPost(!formPost)}>
-					<form onSubmit={(e)=>publicar(e)} className="form-add-post">
-						<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-add-post-input"/>
-						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do post" className="form-add-post-input"/>
-						<textarea required onChange={(e)=>setContent(e.target.value)} value={content} type="text" placeholder="Conteúdo" className="form-add-post-input"/>
-						<button type="submit" className="btn btn-success add-post-btn">Publicar</button>
-					</form>
-				</Modal>
-				
-	
-			<Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg); document.location.reload()}}>
-				<h4>{res}</h4>
-			</Msg>
-			</div>
-		)
-	}
+export default function Navbar({DoPostBtn}){
+	const [visible, setVisible] = useState(false)
 
 	const LogoutBtn = ()=>{
 		function logout(){
@@ -74,14 +21,32 @@ export default function Navbar(){
 			<button className="btn logout-btn" onClick={()=>logout()}><MdLogout size='20'/></button>
 		)
 	}
+	function OpenMenu(){
+		setVisible(true)
+	}
+
+	function CloseMenu(){
+		setVisible(false)
+	}
+
+	
 	return(
 		<div id="header">
 				<nav id="nav-bar">
+					<div id={visible ? "sidebar-visible": "sidebar-invisible"} >
+						<Link onClick={()=>CloseMenu()} to="/painel-adm/posts" className="sidebarLink">
+							<SidebarItem isVisible={visible} icon={<MdPostAdd size={25}/>} title="Publicações"/>
+						</Link>
+						<Link onClick={()=>CloseMenu()} to="/painel-adm/anexos" className="sidebarLink">
+							<SidebarItem isVisible={visible} icon={<MdAddLink size={25}/>} title="Anexos"/>
+						</Link>
+					</div>
 					<div className="logo-container">
+						<FaBars id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/>
 						<h4 className="logo-link">Vic<span style={{color: "var(--color-3)"}}>Blog</span></h4>
 					</div>
 					<div id="adm-actions" className="d-flex gap-2">
-						{DooPostBtn()}
+						{DoPostBtn}
 						{LogoutBtn()}
 					</div>
 				</nav>

@@ -1,19 +1,19 @@
 import React from "react";
-import '../admPanel/admPanel.css'
+import '../Posts/postsManager.css'
 import Navbar from "../../components/navbar/navbar";
 import {useState, useEffect} from 'react'
 import {FaMessage} from 'react-icons/fa6'
 import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdAdd } from "react-icons/md";
 import Modal from "../../components/modal/modal";
 import Msg from "../../components/msg/msg";
 import { useLocation } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale';
 
-export default function AdmPanel(){
+export default function PostsManager(){
 	const [posts, setPosts] = useState([])
 	const [res, setRes] = useState('')
 	const [token, setToken] = useState('')
@@ -96,9 +96,67 @@ export default function AdmPanel(){
 		return createdAtFormated;
 	}
 
+	const DoPostBtn = ()=>{
+		const [formPost, setFormPost] = useState(false)
+		const [autor, setAutor] = useState('')
+		const [title, setTitle] = useState('')
+		const [content, setContent] = useState('')
+		const [res, setRes] = useState('')
+		const [showMsg, setShowMsg] = useState(false)
+		const [token, setToken] = useState('')
+		const API_URL = "http://localhost:8000"
+
+		useEffect(()=>{
+			setToken(Cookies.get('token'))
+		}, [])
+	
+		function publicar(e){
+			e.preventDefault()
+			const token = Cookies.get('token')
+			const URL = `${API_URL}/adm/adicionar_post`
+	
+			const dados = {
+				'autor': autor,
+				'title': title,
+				'content': content
+			}
+			fetch(URL, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(dados)
+			}).then((res)=>res.json()).then((json)=>setRes(json.msg))
+	
+			setFormPost(false)
+			setShowMsg(true)
+		}
+	
+		return(
+			<div>
+				<button onClick={()=>setFormPost(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
+	
+				<Modal isOpen={formPost} setIsOpen={()=>setFormPost(!formPost)}>
+					<form onSubmit={(e)=>publicar(e)} className="form-add-post">
+						<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-add-post-input"/>
+						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do post" className="form-add-post-input"/>
+						<textarea required onChange={(e)=>setContent(e.target.value)} value={content} type="text" placeholder="Conteúdo" className="form-add-post-input"/>
+						<button type="submit" className="btn btn-success add-post-btn">Publicar</button>
+					</form>
+				</Modal>
+				
+	
+			<Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg); document.location.reload()}}>
+				<h4>{res}</h4>
+			</Msg>
+			</div>
+		)
+	}
+
     return(
         <section id="admPanel-section">
-            <Navbar/>
+			<Navbar DoPostBtn={DoPostBtn()}/>
             <h4 style={{display: nomeAdm? 'flex': 'none', justifyContent: 'center', textTransform: "capitalize"}} className="text-center">{nomeAdm}</h4>
             <div id="posts-container" className="container">
 				

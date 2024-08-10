@@ -5,9 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from './pages/home/home';
 import './index.css';
-import AdmPanel from './pages/admPanel/admPanel';
 import OnePost from './pages/post/OnePost';
 import RecoverPass from './pages/recoverPass/recoverPass';
+import Anexos from './pages/Anexos/anexos';
+import PostsManager from './pages/Posts/postsManager';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -17,7 +18,8 @@ root.render(
       <Routes>
         <Route element={<App/>}>
           <Route path="/" element={<Home/>}/>
-          <Route path="/painel-adm" element={<AdmPanel/>}/>
+          <Route path="/painel-adm/posts" element={<PostsManager/>}/>
+          <Route path="/painel-adm/anexos" element={<Anexos/>}/>
           <Route path="/post" element={<OnePost/>}/>
           <Route path="/recover-pass" element={<RecoverPass/>}/>
         </Route>

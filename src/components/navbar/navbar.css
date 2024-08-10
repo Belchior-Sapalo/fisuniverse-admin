@@ -9,14 +9,25 @@
 	width: 100%;
 	top: 0;
 	left: 0;
-	padding: 0 5%;
+	padding: 0 5% 0 1.8%;
 	height: 60px;
 	background-color: rgb(255, 255, 255);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.045);
 }
 
 .logo-container{
-	
+	padding: 10px 0px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+}
+
+
+#toggleSidebarBtn{
+	font-size: 20px;
+	cursor: pointer;
 }
 
 .logo-link{
@@ -24,18 +35,81 @@
 	font-family: var(--bold-font);
 	font-size: 25px;
 	transition: var(--general-transition);
+	margin: 0;
+}
+
+#sidebar-visible{
+	background-color: rgb(255, 255, 255);
+	height: 100vh;
+	position: absolute;
+	top: 60px;
+	left: 0;
+	transition: var(--general-transition);
+	border-right: 1px solid rgba(12, 12, 12, 0.227);
+	width: 18%;
+}
+
+#sidebar-invisible{
+	background-color: rgb(255, 255, 255);
+	height: 100vh;
+	position: absolute;
+	top: 60px;
+	left: -70%;
+	transition: var(--general-transition);
+	border-right: 1px solid rgba(12, 12, 12, 0.227);
+	width: 8%;
+}
+
+.nav-list{
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	margin: 0;
+	padding: 0px;
 }
 
 #nav-content-container{
 }
 
+.nav-bar-link{
+	text-decoration: none;
+	font-size: 18px;
+	color: var(--color-1);
+	transition: var(--general-transition);
+}
+
+
+.add-post-btn{
+    width: 100%;
+}
+
+.dooPost-btn, .logout-btn{
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.064);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    transition: var(--general-transition);
+}
+
+.dooPost-btn:hover, .logout-btn:hover{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0.064);
+}
+
 @media screen and (max-width: 900px){
 	#nav-bar{
-		
+		padding: 0 5%;
 	}
+
 	.logo-link{
 		font-size: 20px;
 		margin-right: 10px;
+	}
+
+	#sidebar-visible{
+		width: 50%;
 	}
 
 	#nav-content-container{
