@@ -24,8 +24,9 @@ export default function PostsManager(){
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
 	const [showMsg, setShowMsg] = useState(false)
+	const [showQuestionDel, setShowQuestionDel] = useState(false)
+	const [postToDelete, setPostToDelete] = useState("")
 	const location = useLocation()
-	const nomeAdm = location.state?.nomeAdm;
 	const API_URL = "http://localhost:8000"
 	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
 
@@ -42,6 +43,7 @@ export default function PostsManager(){
 			}
 		})
         setToken(Cookies.get('token'))
+		
 	}, [])
 
     function verPost(postId){
@@ -59,7 +61,7 @@ export default function PostsManager(){
         }).then((res)=>res.json()).then((json)=>{setRes(json.msg)})
 
 		setIsOpen(false)
-		setShowMsg(true)
+		setShowMsg(false)
     }
 
 	function getIdPostToEditAndLastValues(postId, autor, title, content){
@@ -157,7 +159,6 @@ export default function PostsManager(){
     return(
         <section id="admPanel-section">
 			<Navbar DoPostBtn={DoPostBtn()}/>
-            <h4 style={{display: nomeAdm? 'flex': 'none', justifyContent: 'center', textTransform: "capitalize"}} className="text-center">{nomeAdm}</h4>
             <div id="posts-container" className="container">
 				
 			{ 
@@ -173,7 +174,7 @@ export default function PostsManager(){
                                 <div className="post-adm-options" style={{display: token? 'flex': 'none'}}>
                                     <div className="d-flex gap-2">
 										<button className="btn btn-primary post-adm-options-btn" onClick={()=>getIdPostToEditAndLastValues(post.id, post.autor, post.title, post.content)}><FaEdit/></button>
-										<button className="btn btn-danger post-adm-options-btn" onClick={()=>deletarPost(post.id)}><MdDelete/></button>
+										<button className="btn btn-danger post-adm-options-btn" onClick={()=>{setShowQuestionDel(true); setPostToDelete(post.id)}}><MdDelete/></button>
 									</div>
                                 </div>
                             </div>
@@ -202,6 +203,12 @@ export default function PostsManager(){
 				<button type="submit" className="btn btn-success">Editar</button>
             </form>
         </Modal>
+		<Modal isOpen={showQuestionDel} setIsOpen={()=>setShowQuestionDel(!showQuestionDel)}>
+			<div id="delete-post-question-container">
+				<h4>Deletar publicação?</h4>
+				<button className="btn btn-success" onClick={() =>{ deletarPost(postToDelete); document.location.reload()}}>Sim</button>
+			</div>
+		</Modal>
 		<Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg); document.location.reload()}}>
 			<h4>{res}</h4>
 		</Msg>

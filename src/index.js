@@ -10,7 +10,6 @@ import RecoverPass from './pages/recoverPass/recoverPass';
 import Anexos from './pages/Anexos/anexos';
 import PostsManager from './pages/Posts/postsManager';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

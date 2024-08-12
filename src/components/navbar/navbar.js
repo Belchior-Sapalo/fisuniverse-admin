@@ -1,16 +1,122 @@
 import React, { useEffect } from "react";
 import {useState} from 'react'
 import '../navbar/navbar.css'
-import Modal from "../modal/modal";
 import Cookies from "js-cookie";
-import { MdAdd, MdLogout, MdPostAdd, MdAddLink } from "react-icons/md";
+import { MdError, MdLogout, MdPostAdd, MdAddLink } from "react-icons/md";
 import {FaBars} from 'react-icons/fa'
-import Msg from "../msg/msg";
 import SidebarItem from "../sidebaritem/sidebarItem";
 import {Link, useNavigate} from 'react-router-dom'
+import Modal from "../../components/modal/modal"
+import Btn from "../../components/btn/Btn"
+const API_URL = "http://localhost:8000"
 
 export default function Navbar({DoPostBtn}){
 	const [visible, setVisible] = useState(false)
+	const [adminId, setAdminId] = useState("")
+	const [adminNome, setAdminNome] = useState("")
+	const [adminEmail, setAdminEmail] = useState("")
+	const [adminDate, setAdminDate] = useState("")
+	const [isLoading, setIsLoading] = useState(false)
+	const [authUpdate, setAuthUpdate] = useState(null)
+	const [updateModalVisible, setUpdateModalVisible] = useState(false)
+	const [selectedFile, setSelectedFile] = useState(null)
+	const [openProfile, setOpenProfile] = useState(false)
+	const [prevSenha, setPrevSenha] = useState("")
+	const [newSenha, setNewSenha] = useState("")
+	const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar perfil")
+	const [wasClikedAlready, setWasClikedAlready] = useState(false)
+	const [isDeleting, setIsDeleting] = useState(false)
+	const [deleteRes, setDeleteRes] = useState(null)
+
+	const [token, setToken] = useState("")
+	const navigate = useNavigate()
+
+	useEffect(()=>{
+		setAdminId(Cookies.get('adminId'))
+		setAdminNome(Cookies.get('adminName'))
+		setAdminEmail(Cookies.get('adminEmail'))
+		setAdminDate(Cookies.get('adminDate'))
+		setToken(Cookies.get("token"))
+	}, [])
+
+	
+	const handlerFileChange = (e) => {
+		setSelectedFile(e.target.files[0])
+	}
+
+	function handlerUpdate(e){
+		e.preventDefault()
+		setAuthUpdate(null)
+		setIsLoading(true)
+		const URL = `${API_URL}/adm/atualizar_perfil/${adminId}`
+
+		const formData = new FormData()
+		formData.append('nome', adminNome);
+		formData.append('email', adminEmail);
+		formData.append('photo', selectedFile)
+		formData.append('senhaActual', prevSenha)
+		formData.append('senhaNova', newSenha)
+
+		fetch(URL, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${token}`
+			},
+			body: formData
+		})
+		.then((res)=>res.json())
+		.then((json)=>{
+			if(json.status == 200){
+				Cookies.set('adminName', adminNome)
+				Cookies.set('adminEmail', adminEmail)
+				setUpdateModalVisible(!updateModalVisible)
+				setIsLoading(false)
+				document.location.reload()
+			}else{
+				setIsLoading(false)
+				setDeleteRes(json)
+			}
+		})
+	}
+
+	function handlerDeleteProfile(){
+		if(wasClikedAlready){
+			setIsDeleting(true)
+			setMoreOptionsMsg("Eliminando perfil...")
+			const URL = `${API_URL}/adm/eliminar_perfil/${adminId}`
+
+			fetch(URL, {
+				method: 'DELETE',
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			})
+			.then((res)=>res.json())
+			.then((json)=>{
+				if(json.status == 200){
+					deleteAllCookies()
+					setIsDeleting(false)
+					window.location.replace('/')
+				}else{
+					setIsLoading(false)
+					setAuthUpdate(json)
+					setIsDeleting(false)
+				}
+			})
+		}else{
+			setWasClikedAlready(true)
+			setMoreOptionsMsg("Certeza?")
+			setTimeout(()=>{setWasClikedAlready(false); setMoreOptionsMsg("Eliminar perfil")}, 4000)
+		}
+	}
+
+	function deleteAllCookies(){
+		Cookies.remove('token')
+		Cookies.remove('adminName')
+		Cookies.remove("adminEmail")
+		Cookies.remove("adminDate")
+		Cookies.remove('adminId')
+	}
 
 	const LogoutBtn = ()=>{
 		function logout(){
@@ -29,6 +135,30 @@ export default function Navbar({DoPostBtn}){
 		setVisible(false)
 	}
 
+	function formatarData(createdAt){
+		const date = new Date(createdAt)
+		const day = String(date.getDate()).padStart(2, '0')
+		const month = String(date.getMonth() + 1).padStart(2, '0')
+		const year = date.getFullYear()
+
+		return `${day}-${month}-${year}`
+
+	}
+
+	function closeModalUpdate(){
+		setUpdateModalVisible(false)
+		setNewSenha("")
+		setPrevSenha("")
+		setWasClikedAlready(false)
+		setMoreOptionsMsg("Eliminar perfil")
+	}
+
+	function closeProfile(){
+		setOpenProfile(false)
+		setWasClikedAlready(false)
+		setMoreOptionsMsg("Eliminar perfil")
+		setIsDeleting(false)
+	}
 	
 	return(
 		<div id="header">
@@ -48,7 +178,78 @@ export default function Navbar({DoPostBtn}){
 					<div id="adm-actions" className="d-flex gap-2">
 						{DoPostBtn}
 						{LogoutBtn()}
+						
 					</div>
+					<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`http://localhost:8000/adm/get_profile_picture/${adminId}`}>
+					</img>
+					<Modal isOpen={openProfile} setIsOpen={()=>closeProfile()}>
+						<div id="profile-container">
+							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`http://localhost:8000/adm/get_profile_picture/${adminId}`}>
+							</img>
+
+							<div id="profile-more-info">
+								<h4>Nome: {adminNome}</h4>
+								<h4>Email: {adminEmail}</h4>
+								<h4>Criada em: {formatarData(adminDate)}</h4>
+							</div>
+
+							<div id="more-options">
+								<button onClick={()=>{
+									setOpenProfile(false); setUpdateModalVisible(true)
+								}} className="btn btn-success">Editar perfil</button>
+
+								<button disabled={isDeleting} onClick={()=>handlerDeleteProfile()} className="btn btn-danger">{moreOptionsMsg}</button>
+							</div>
+
+							{deleteRes && <p className="text-center auth-res"><MdError size={20} color="red"/> {deleteRes.msg}</p>}
+						</div>
+					</Modal>
+					<Modal isOpen={updateModalVisible} setIsOpen={()=>closeModalUpdate()}>
+						<form 
+							id="update-profile_form" 
+							onSubmit={(e)=>handlerUpdate(e)} 
+						>
+							<h4>Atualizar conta administrativa</h4>
+							
+							<input 
+								type="text" 
+								placeholder="Nome" 
+								onChange={(e)=>setAdminNome(e.target.value)} 
+								value={adminNome} 
+								className="adm-input"
+							/>
+
+							<input 
+								type="email" 
+								placeholder="Email" 
+								onChange={(e)=>setAdminEmail(e.target.value)} 
+								value={adminEmail} 
+								className="adm-input"
+							/>
+
+							<input 
+								type="password" 
+								placeholder="Senha actual" 
+								onChange={(e)=>setPrevSenha(e.target.value)} 
+								value={prevSenha} 
+								className="adm-input"
+							/>
+
+							<input 
+								type="password" 
+								placeholder="Nova senha" 
+								onChange={(e)=>setNewSenha(e.target.value)} 
+								value={newSenha} 
+								className="adm-input"
+							/>
+
+							<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
+							<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
+
+							<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Atualizar"/>
+							{authUpdate && <p className="text-center auth-res"><MdError size={20} color="red"/> {authUpdate.msg}</p>}
+						</form>
+					</Modal>
 				</nav>
 		</div>
 	)

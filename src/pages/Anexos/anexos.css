@@ -1,7 +1,8 @@
-#admPanel-section{
-    padding-top: 70px;
+#admPanel-section-anexos{
+    padding: 70px 0;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
 }
 
 #posts-container{
@@ -48,10 +49,9 @@
 }
 
 .edit-post-form > textarea{
-    height: 350px;
+    height: 140px;
     resize: none;
 }
-
 
 .edit-post-form-input, .form-add-post-input{
     outline: none;
@@ -72,11 +72,32 @@
 }
 
 .form-add-post-anexos > textarea{
-    height: 100px;
+    height: 140px;
+    resize: none;
+}
+
+.charCounter{
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: end;
+}
+
+.charCounter p{
+    margin: 0;
+    font-weight: bold;
+    opacity: .5;
 }
 
 .add-post-btn{
     width: 100%;
+}
+
+.adm-options-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
 }
 
 .dooPost-btn, .logout-btn{
@@ -94,8 +115,29 @@
     border: 1px solid rgba(0, 0, 0, 0.064);
 }
 
+#delete-post-question-container{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-message{
+    color: red;
+    text-align: center;
+}
+
 @media screen and (max-width: 900px){
     #posts-container{
         padding: 0;
+    }
+
+    .form-add-post-anexos > textarea{
+        height: 167px;
+    }
+
+    .error-message{
+        font-size: 12px;
     }
 }

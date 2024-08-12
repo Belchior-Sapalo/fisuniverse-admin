@@ -15,6 +15,32 @@
 	border-bottom: 1px solid rgba(0, 0, 0, 0.045);
 }
 
+#go-to-profile{
+	border-radius: 50%;
+	border: 1px solid rgba(52, 52, 52, 0.262);
+	cursor: pointer;
+}
+
+#profile-container{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+#profile-photo{
+	width: 300px;
+}
+
+#profile-more-info{
+	margin-bottom: 10px;
+}
+
+#profile-more-info h4{
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
 .logo-container{
 	padding: 10px 0px;
 	text-align: center;
@@ -23,7 +49,6 @@
 	align-items: center;
 	gap: 15px;
 }
-
 
 #toggleSidebarBtn{
 	font-size: 20px;
@@ -96,6 +121,29 @@
 .dooPost-btn:hover, .logout-btn:hover{
     background-color: rgb(255, 255, 255);
     border: 1px solid rgba(0, 0, 0, 0.064);
+}
+
+#update-profile_form{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 8px;
+}
+
+#update-profile_form .adm-input{
+    outline: none;
+    margin: 10px;
+    padding: 15px;
+	border-radius: 5px;
+    border: none;
+    width: 90%;
+}
+
+#more-options{
+	display: flex;
+	gap: 10px;
 }
 
 @media screen and (max-width: 900px){

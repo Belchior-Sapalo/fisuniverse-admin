@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import '../home/home.css'
 import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
-import Loader from "../../components/loading/loader";
 import Modal from "../../components/modal/modal";
 import Btn from '../../components/btn/Btn';
 import { MdAttachEmail, MdError } from "react-icons/md";
@@ -22,8 +21,13 @@ export default function Home(){
 	const [isOpen, setIsOpen] = useState(false)
 	const [emailRecover, setEmailRecover] = useState('')
 	const [isSent, setIsSent] = useState(false)
+	const [selectedFile, setSelectedFile] = useState(null)
 	const [recoverMsg, setRecoverMsg] = useState('')
 	const API_URL = "http://localhost:8000"
+
+	const handlerFileChange = (e) => {
+		setSelectedFile(e.target.files[0])
+	}
 
 	const navigate = useNavigate()
 
@@ -49,7 +53,12 @@ export default function Home(){
 		.then((json)=>{
 			if(json.status == 200){
 				Cookies.set('token', json.token)
-				navigate(`/painel-adm/posts`, {state: {nomeAdm: json.nome}})
+				Cookies.set('adminId', json.admin.id)
+				Cookies.set('adminName', json.admin.nome)
+				Cookies.set('adminEmail', json.admin.email)
+				Cookies.set('adminDate', json.admin.createdAt)
+
+				navigate(`/painel-adm/posts`)
 				setIsLoading(false)
 			}else{
 				setAuth(json)
@@ -65,18 +74,15 @@ export default function Home(){
 		setIsLoading(true)
 		const URL = `${API_URL}/adm/signin_adm`
 
-		const dados = {
-			'nome': nomeSignIn,
-			'email': emailSignIn,
-			'senha': senhaSignIn
-		}
+		const formData = new FormData()
+		formData.append('nome', nomeSignIn);
+		formData.append('email', emailSignIn);
+		formData.append('senha', senhaSignIn);
+		formData.append('photo', selectedFile)
 
 		fetch(URL, {
 			method: 'POST',
-			headers: {
-				'Content-type': 'application/json'
-			},
-			body: JSON.stringify(dados)
+			body: formData
 		})
 		.then((res)=>res.json())
 		.then((json)=>{
@@ -118,11 +124,12 @@ export default function Home(){
 				setIsSent(true)
 				setRecoverMsg(json.msg)
 				setEmailRecover('')
-
-				setTimeout(()=>setIsOpen(!isOpen), 3000)
+		
+				setTimeout(()=>{setIsOpen(!isOpen); setRecoverMsg("")}, 3000)
 			}else{
 				setIsLoadingMailSend(false)
 				setRecoverMsg(json.msg)
+				setIsSent(false)
 			}
 		})
 	}
@@ -147,7 +154,7 @@ export default function Home(){
 					type='password' 
 					placeholder="Senha"
 					 onChange={(e)=>setSenha(e.target.value)} 
-					 minLength={4} 
+					 minLength={6} 
 					 value={senha} 
 					 className="adm-input"
 				/>
@@ -201,6 +208,9 @@ export default function Home(){
 					className="adm-input"
 				/>
 
+					<input required type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
+					<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
+
 				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Criar conta"/>
 				{authSignin && <p className="text-center auth-res"><MdError size={20} color="red"/> {authSignin.msg}</p>}
 				<p 
@@ -232,7 +242,7 @@ export default function Home(){
 
 					<Btn isLoading={isLoadingMailSend} setIsLoading={()=>setIsLoadingMailSend(!isLoadingMailSend)} value="Enviar email de recuperação"/>
 
-					{isSent? <p style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
+					{isSent? <p className="text-center" style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
 				</form>
 			</Modal>
 		</section>

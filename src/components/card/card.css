@@ -1,68 +1,83 @@
 #card-container{
-    width: 340px;
-    padding: 10px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
     margin-bottom: 8px;
+    background-color: rgba(211, 211, 211, 0.43);
+    padding: 0 10px 0px 0px;
+    height: max-content;
 }
 
 #post-infor-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     gap: 8px;
 }
 
-#post-infor-container h6, p{
+#text-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10px 6px;
     margin: 0;
-    font-size: 14px;
+    width: 100%;
+}
+
+#text-about-book{
+    
+}
+
+#post-cover-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+#post-cover-container img{
+    
+}
+
+#post-infor-container{
+    margin-bottom: 8px;
+}
+
+#post-infor-container h6{
+    margin: 0;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+#post-more-infor-container{
+    display: flex;
+    gap: 8px;
 }
 
 #post-cover-container img{
 }
 
 #post-desc-container{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#post-desc-container p{
+   
 }
 
 #options-container{
-    display: flex;
-    justify-content: end;
+   justify-content: flex-end;
+   gap: 8px;
 }
 
 @media screen and (max-width: 800px){
-    #card-container{
-        background-color: rgb(211, 211, 211);
-        width: 100%;
-        padding: 0 5px 0px 0px;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        height: 150px;
-    }
-
-    #text-container{
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 10px 6px;
-        margin: 0;
-    }
-    
     #post-infor-container {
         display: flex;
     }
-    
-    #post-infor-container h6, p{
+
+    #post-infor-container h6{
         font-size: 14px;
     }
     
-    #post-cover-container{
-        width: 40%;
-    }
-
-    #post-cover-container img{
-        height: 100%;
+    #post-more-infor-container h6{
+        font-size: 10px;
     }
     
     #post-desc-container{
