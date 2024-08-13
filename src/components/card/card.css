@@ -1,9 +1,10 @@
 #card-container{
     display: flex;
     margin-bottom: 8px;
-    background-color: rgba(211, 211, 211, 0.43);
-    padding: 0 10px 0px 0px;
+    background-color: rgba(217, 217, 217, 0.116);
+    padding: 10px;
     height: max-content;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.084);
 }
 
 #post-infor-container {
@@ -29,6 +30,7 @@
     justify-content: center;
     align-items: center;
     margin-right: 8px;
+    z-index: -9999;
 }
 
 #post-cover-container img{
@@ -51,6 +53,8 @@
 }
 
 #post-cover-container img{
+    max-width: 150px;
+    min-height: 200px;
 }
 
 #post-desc-container{
@@ -67,7 +71,13 @@
    gap: 8px;
 }
 
-@media screen and (max-width: 800px){
+@media (max-width: 575.98px){
+    #card-container{
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 767.98px){
     #post-infor-container {
         display: flex;
     }
@@ -87,5 +97,33 @@
     #options-container{
         display: flex;
         justify-content: end;
+    }
+}
+
+@media (max-width: 991.98px){
+    #post-infor-container h6{
+        font-size: 15px;
+    }
+    
+    #post-more-infor-container h6{
+        font-size: 12px;
+    }
+    
+    #post-desc-container{
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1199.98px){
+    #post-infor-container h6{
+        font-size: 15px;
+    }
+    
+    #post-more-infor-container h6{
+        font-size: 12px;
+    }
+    
+    #post-desc-container{
+        font-size: 12px;
     }
 }

@@ -2,7 +2,7 @@ import React from "react";
 import '../modal/modal.css'
 import {MdClose} from 'react-icons/md'
 
-export default function Modal({isOpen, setIsOpen, children, isSmal}){
+export default function Modal({isOpen, setIsOpen, children}){
     if(isOpen){
         return(
             <div id="modal-container">

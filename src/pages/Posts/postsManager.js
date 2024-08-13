@@ -6,12 +6,13 @@ import {FaMessage} from 'react-icons/fa6'
 import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import Modal from "../../components/modal/modal";
-import Msg from "../../components/msg/msg";
 import { useLocation } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale';
+import DeleteBtn from "../../components/deleteBtn/deleteBtn";
+import Message from "../../components/message/message";
 
 export default function PostsManager(){
 	const [posts, setPosts] = useState([])
@@ -24,13 +25,25 @@ export default function PostsManager(){
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
 	const [showMsg, setShowMsg] = useState(false)
-	const [showQuestionDel, setShowQuestionDel] = useState(false)
-	const [postToDelete, setPostToDelete] = useState("")
+	const [isAnError, setIsAnError] = useState(false)
 	const location = useLocation()
-	const API_URL = "http://localhost:8000"
+	const API_URL = "http://192.168.56.1:8000"
 	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
 
     useEffect(()=>{
+		if(localStorage.getItem("reloaded") === 'true'){
+			if(localStorage.getItem("isAnError") === 'true'){
+				setIsAnError(true)
+			}else{
+				setIsAnError(false)
+			}
+			setRes(localStorage.getItem("lastMsg"))
+			setShowMsg(true)
+            setTimeout(()=>{setShowMsg(false)}, 3000)
+			localStorage.removeItem("reloaded")
+			localStorage.removeItem('lastMsg')
+			localStorage.removeItem("isAnError")
+		}
 		const URL = `${API_URL}/verPosts`
 		fetch(URL)
 		.then((res)=>res.json())
@@ -49,20 +62,6 @@ export default function PostsManager(){
     function verPost(postId){
 		navigate(`/post?q=${postId}`)
 	}
-
-    function deletarPost(postId){
-        const URL = `${API_URL}/adm/apagar_post/${postId}`
-
-        fetch(URL,{
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then((res)=>res.json()).then((json)=>{setRes(json.msg)})
-
-		setIsOpen(false)
-		setShowMsg(false)
-    }
 
 	function getIdPostToEditAndLastValues(postId, autor, title, content){
 		setIsOpen(true)
@@ -88,10 +87,24 @@ export default function PostsManager(){
 							'Content-type': 'application/json'
 					},
 					body: JSON.stringify(dados)
-			}).then((res)=>res.json()).then((json)=>setRes(json.msg))
+			}).then((res)=>res.json()).then((json)=>{
+				if(json.status != 200){
+					reload(false)
+					localStorage.setItem('lastMsg', json.msg)
+				}else{
+					setIsAnError(true)
+					setRes(json.msg)
+				}
+
+			})
 			setIsOpen(false)
-			setShowMsg(true)
     }
+
+	function reload(isAnError){
+		localStorage.setItem('reloaded', 'true')
+        localStorage.setItem('isAnError', isAnError)
+		document.location.reload()
+	}
 
 	function formatarData(data){
 		const createdAtFormated = formatDistanceToNow(data, { addSuffix: true, locale: ptBR });
@@ -103,11 +116,7 @@ export default function PostsManager(){
 		const [autor, setAutor] = useState('')
 		const [title, setTitle] = useState('')
 		const [content, setContent] = useState('')
-		const [res, setRes] = useState('')
-		const [showMsg, setShowMsg] = useState(false)
-		const [token, setToken] = useState('')
-		const API_URL = "http://localhost:8000"
-
+		
 		useEffect(()=>{
 			setToken(Cookies.get('token'))
 		}, [])
@@ -129,10 +138,15 @@ export default function PostsManager(){
 					'Content-type': 'application/json'
 				},
 				body: JSON.stringify(dados)
-			}).then((res)=>res.json()).then((json)=>setRes(json.msg))
-	
-			setFormPost(false)
-			setShowMsg(true)
+			}).then((res)=>res.json()).then((json)=>{
+				if(json.status == 201){
+					reload(false)
+					localStorage.setItem('lastMsg', json.msg)
+				}else{
+					setIsAnError(true)
+					setRes(json.msg)
+				}
+			})
 		}
 	
 		return(
@@ -147,21 +161,54 @@ export default function PostsManager(){
 						<button type="submit" className="btn btn-success add-post-btn">Publicar</button>
 					</form>
 				</Modal>
-				
-	
-			<Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg); document.location.reload()}}>
-				<h4>{res}</h4>
-			</Msg>
 			</div>
 		)
 	}
+
+
+	// const DeleteBtn = (id) => {
+	// 	const [wasClikedAlready, setWasClikedAlready] = useState(false)
+	// 	const [isDeleting, setIsDeleting] = useState(false)
+	// 	function handlerDeletePost(postId){
+	// 		if(wasClikedAlready){
+	// 			setIsDeleting(true)
+	// 			const URL = `${API_URL}/adm/apagar_post/${postId}`
+	
+	// 			fetch(URL, {
+	// 				method: 'DELETE',
+	// 				headers: {
+	// 					'Authorization': `Bearer ${token}`
+	// 				}
+	// 			})
+	// 			.then((res)=>res.json())
+	// 			.then((json)=>{
+	// 				if(json.status == 200){
+	// 					document.location.reload()
+	// 					setIsDeleting(false)
+	// 				}else{
+	// 					alert(json.msg)
+	// 					setIsDeleting(false)
+	// 				}
+	// 			})
+	// 		}else{
+	// 			setWasClikedAlready(true)
+	// 			setTimeout(()=>{setWasClikedAlready(false)}, 4000)
+	// 		}
+	// 	}
+	// 	return(
+	// 		<button disabled={isDeleting} className="btn btn-danger post-adm-options-btn" onClick={()=>{handlerDeletePost(id)}}>{wasClikedAlready ? <MdError color="orange"/> : <MdDelete/>}</button>
+	// 	)
+	// }
 
     return(
         <section id="admPanel-section">
 			<Navbar DoPostBtn={DoPostBtn()}/>
             <div id="posts-container" className="container">
-				
-			{ 
+			
+			<Message isOpen={showMsg} isAnError={isAnError}>
+				<h5>{res}</h5>
+			</Message>	
+			{
 				havePostsInDatabase ? posts.map(post=>{
 					return(
 						<div className="post">
@@ -174,7 +221,7 @@ export default function PostsManager(){
                                 <div className="post-adm-options" style={{display: token? 'flex': 'none'}}>
                                     <div className="d-flex gap-2">
 										<button className="btn btn-primary post-adm-options-btn" onClick={()=>getIdPostToEditAndLastValues(post.id, post.autor, post.title, post.content)}><FaEdit/></button>
-										<button className="btn btn-danger post-adm-options-btn" onClick={()=>{setShowQuestionDel(true); setPostToDelete(post.id)}}><MdDelete/></button>
+										{<DeleteBtn id={post.id}/>}
 									</div>
                                 </div>
                             </div>
@@ -203,15 +250,6 @@ export default function PostsManager(){
 				<button type="submit" className="btn btn-success">Editar</button>
             </form>
         </Modal>
-		<Modal isOpen={showQuestionDel} setIsOpen={()=>setShowQuestionDel(!showQuestionDel)}>
-			<div id="delete-post-question-container">
-				<h4>Deletar publicação?</h4>
-				<button className="btn btn-success" onClick={() =>{ deletarPost(postToDelete); document.location.reload()}}>Sim</button>
-			</div>
-		</Modal>
-		<Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg); document.location.reload()}}>
-			<h4>{res}</h4>
-		</Msg>
         </section>
     )
 }

@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Modal from "../../components/modal/modal";
 import Btn from '../../components/btn/Btn';
 import { MdAttachEmail, MdError } from "react-icons/md";
+import {FaEye} from "react-icons/fa"
 
 export default function Home(){
 	const [email, setEmail] = useState('')
@@ -23,7 +24,8 @@ export default function Home(){
 	const [isSent, setIsSent] = useState(false)
 	const [selectedFile, setSelectedFile] = useState(null)
 	const [recoverMsg, setRecoverMsg] = useState('')
-	const API_URL = "http://localhost:8000"
+	const API_URL = "http://192.168.56.1:8000"
+	const [seePass, setSeePass] = useState(false)
 
 	const handlerFileChange = (e) => {
 		setSelectedFile(e.target.files[0])
@@ -150,14 +152,17 @@ export default function Home(){
 					className="adm-input"
 				/>
 
-				<input 
-					type='password' 
-					placeholder="Senha"
-					 onChange={(e)=>setSenha(e.target.value)} 
-					 minLength={6} 
-					 value={senha} 
-					 className="adm-input"
-				/>
+				<div id="pass-input-container">
+					<input 
+						type={seePass ? "text" : "password"} 
+						placeholder="Senha"
+						onChange={(e)=>setSenha(e.target.value)} 
+						value={senha} 
+						className="adm-input"
+						id="pass"
+					/>
+					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+				</div>
 				
 				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
 				{auth && <p className="text-center auth-res"><MdError size={20} color="red"/> {auth.msg}</p>}
@@ -168,6 +173,8 @@ export default function Home(){
 						setIsOpenLoginForm(!isOpenLoginForm); 
 						setIsOpenSignInForm(!isOpenSignInForm); 
 						setIsLoading(false)
+						setSeePass(false)
+						setSenha("")
 					}}>
 					Não tem uma conta? <span style={{color: "blue"}}>Criar conta</span>
 				</p>
@@ -199,17 +206,20 @@ export default function Home(){
 					className="adm-input"
 				/>
 
-				<input 
-					type='password' 
-					placeholder="Senha" 
-					onChange={(e)=>setSenhaSignIn(e.target.value)} 
-					minLength={4} 
-					value={senhaSignIn} 
-					className="adm-input"
-				/>
+				<div id="pass-input-container">
+					<input 
+						type={seePass ? "text" : "password"} 
+						placeholder="Senha"
+						onChange={(e)=>setSenha(e.target.value)} 
+						value={senha} 
+						className="adm-input"
+						id="pass"
+					/>
+					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+				</div>
 
-					<input required type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
-					<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
+				<input required type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
+				<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
 
 				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Criar conta"/>
 				{authSignin && <p className="text-center auth-res"><MdError size={20} color="red"/> {authSignin.msg}</p>}
@@ -220,7 +230,11 @@ export default function Home(){
 						setIsOpenLoginForm(!isOpenLoginForm); 
 						setIsOpenSignInForm(!isOpenSignInForm); 
 						setIsLoading(false); 
-						setAuth('')}}
+						setAuth('')
+						setSenha("")
+						setSeePass(false)}
+					}
+						
 					>Já tem uma conta? <span style={{color: "blue"}}>Iniciar sessão</span>
 				</p>
 			</form>

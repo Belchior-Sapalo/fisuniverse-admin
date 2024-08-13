@@ -123,7 +123,7 @@
     border: 1px solid rgba(0, 0, 0, 0.064);
 }
 
-#update-profile_form{
+#update-profile-form{
 	display: flex;
     flex-direction: column;
     justify-content: center;
@@ -132,13 +132,42 @@
     border-radius: 8px;
 }
 
-#update-profile_form .adm-input{
+#update-profile-form .adm-input-update{
     outline: none;
-    margin: 10px;
     padding: 15px;
+	margin: 10px;
 	border-radius: 5px;
     border: none;
+	width: 90%;
+}
+
+.pass-input-container{
+	margin: 10px;
+    outline: none;
+    border: none;
     width: 90%;
+    display: flex;
+    justify-content: end;
+    position: relative;
+	padding: 0;
+}
+
+.pass-input-container #new, .pass-input-container #prev{
+    width: 100%;
+    margin: 0;
+}
+
+.pass-input-container button{
+    margin-right: 10px;
+    padding: 0px 0px 0px 8px;
+    position: absolute;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+}
+
+#see-pass-icon{
+    opacity: 0.5;
 }
 
 #more-options{

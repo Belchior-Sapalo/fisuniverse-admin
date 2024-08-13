@@ -1,5 +1,7 @@
 #admPanel-section{
-    padding-top: 20px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-top: 60px;
 }
 
 .post{
@@ -39,6 +41,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 10px;
+    width: 100%;
 }
 
 .edit-post-form > textarea{
@@ -46,6 +49,9 @@
     resize: none;
 }
 
+.edit-post-form >::-webkit-scrollbar{
+    display: none;
+}
 
 .edit-post-form-input, .form-add-post-input{
     outline: none;
@@ -63,6 +69,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 5px;
+    width: 100%;
 }
 
 .form-add-post > textarea{
@@ -88,6 +95,11 @@
     border: 1px solid rgba(0, 0, 0, 0.064);
 }
 
-@media screen and (max-width: 900px){
-    
+@media (max-width: 991.98px){
+    #admPanel-section{
+        
+    }
+    .post-adm-options-btn{
+        padding: 2px;
+    }
 }

@@ -6,7 +6,7 @@
 }
 
 #posts-container{
-    padding-left: 55px;
+    padding: 0 30px;
 }
 
 .post{
@@ -34,7 +34,7 @@
     justify-content: center;
     gap: 5px;
 }
-.post-adm-options-btn{
+.adm-options-btn{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -69,6 +69,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 5px;
+    width: 100%;
 }
 
 .form-add-post-anexos > textarea{
@@ -128,9 +129,20 @@
     text-align: center;
 }
 
-@media screen and (max-width: 900px){
+@media (max-width: 575.98px){
+  
+}
+
+@media (max-width: 767.98px){
+    .adm-options-btn{
+        padding: 2px 5px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 991.98px){
     #posts-container{
-        padding: 0;
+        padding: 0 8px;
     }
 
     .form-add-post-anexos > textarea{
@@ -140,4 +152,8 @@
     .error-message{
         font-size: 12px;
     }
+}
+
+@media (max-width: 1199.98px){
+  
 }

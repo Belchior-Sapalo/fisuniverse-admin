@@ -6,9 +6,10 @@ import { MdError, MdLogout, MdPostAdd, MdAddLink } from "react-icons/md";
 import {FaBars} from 'react-icons/fa'
 import SidebarItem from "../sidebaritem/sidebarItem";
 import {Link, useNavigate} from 'react-router-dom'
+import {FaEye} from "react-icons/fa"
 import Modal from "../../components/modal/modal"
 import Btn from "../../components/btn/Btn"
-const API_URL = "http://localhost:8000"
+const API_URL = "http://192.168.56.1:8000"
 
 export default function Navbar({DoPostBtn}){
 	const [visible, setVisible] = useState(false)
@@ -17,7 +18,7 @@ export default function Navbar({DoPostBtn}){
 	const [adminEmail, setAdminEmail] = useState("")
 	const [adminDate, setAdminDate] = useState("")
 	const [isLoading, setIsLoading] = useState(false)
-	const [authUpdate, setAuthUpdate] = useState(null)
+	const [updateRes, setUpdateRes] = useState(null)
 	const [updateModalVisible, setUpdateModalVisible] = useState(false)
 	const [selectedFile, setSelectedFile] = useState(null)
 	const [openProfile, setOpenProfile] = useState(false)
@@ -26,6 +27,8 @@ export default function Navbar({DoPostBtn}){
 	const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar perfil")
 	const [wasClikedAlready, setWasClikedAlready] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
+	const [seePass, setSeePass] = useState(false)
+	const [seeNewPass, setSeeNewPass] = useState(false)
 	const [deleteRes, setDeleteRes] = useState(null)
 
 	const [token, setToken] = useState("")
@@ -46,7 +49,7 @@ export default function Navbar({DoPostBtn}){
 
 	function handlerUpdate(e){
 		e.preventDefault()
-		setAuthUpdate(null)
+		setUpdateRes(null)
 		setIsLoading(true)
 		const URL = `${API_URL}/adm/atualizar_perfil/${adminId}`
 
@@ -69,12 +72,12 @@ export default function Navbar({DoPostBtn}){
 			if(json.status == 200){
 				Cookies.set('adminName', adminNome)
 				Cookies.set('adminEmail', adminEmail)
-				setUpdateModalVisible(!updateModalVisible)
-				setIsLoading(false)
-				document.location.reload()
+				localStorage.setItem('lastMsg', json.msg)
+				reload(false)
 			}else{
 				setIsLoading(false)
-				setDeleteRes(json)
+				setUpdateRes(json)
+				setTimeout(()=>{setUpdateRes("")}, 5000)
 			}
 		})
 	}
@@ -99,7 +102,7 @@ export default function Navbar({DoPostBtn}){
 					window.location.replace('/')
 				}else{
 					setIsLoading(false)
-					setAuthUpdate(json)
+					setUpdateRes(json)
 					setIsDeleting(false)
 				}
 			})
@@ -142,7 +145,6 @@ export default function Navbar({DoPostBtn}){
 		const year = date.getFullYear()
 
 		return `${day}-${month}-${year}`
-
 	}
 
 	function closeModalUpdate(){
@@ -151,6 +153,9 @@ export default function Navbar({DoPostBtn}){
 		setPrevSenha("")
 		setWasClikedAlready(false)
 		setMoreOptionsMsg("Eliminar perfil")
+		setUpdateRes("")
+		setSeeNewPass(false)
+		setSeePass(false)
 	}
 
 	function closeProfile(){
@@ -159,7 +164,11 @@ export default function Navbar({DoPostBtn}){
 		setMoreOptionsMsg("Eliminar perfil")
 		setIsDeleting(false)
 	}
-	
+	function reload(isAnError){
+		localStorage.setItem('reloaded', 'true')
+        localStorage.setItem('isAnError', isAnError)
+		document.location.reload()
+	}
 	return(
 		<div id="header">
 				<nav id="nav-bar">
@@ -180,11 +189,11 @@ export default function Navbar({DoPostBtn}){
 						{LogoutBtn()}
 						
 					</div>
-					<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`http://localhost:8000/adm/get_profile_picture/${adminId}`}>
+					<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`http://192.168.56.1:8000/adm/get_profile_picture/${adminId}`}>
 					</img>
 					<Modal isOpen={openProfile} setIsOpen={()=>closeProfile()}>
 						<div id="profile-container">
-							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`http://localhost:8000/adm/get_profile_picture/${adminId}`}>
+							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`http://192.168.56.1:8000/adm/get_profile_picture/${adminId}`}>
 							</img>
 
 							<div id="profile-more-info">
@@ -204,9 +213,9 @@ export default function Navbar({DoPostBtn}){
 							{deleteRes && <p className="text-center auth-res"><MdError size={20} color="red"/> {deleteRes.msg}</p>}
 						</div>
 					</Modal>
-					<Modal isOpen={updateModalVisible} setIsOpen={()=>closeModalUpdate()}>
+					<Modal isOpen={updateModalVisible} setIsOpen={()=>{closeModalUpdate()}}>
 						<form 
-							id="update-profile_form" 
+							id="update-profile-form" 
 							onSubmit={(e)=>handlerUpdate(e)} 
 						>
 							<h4>Atualizar conta administrativa</h4>
@@ -216,7 +225,7 @@ export default function Navbar({DoPostBtn}){
 								placeholder="Nome" 
 								onChange={(e)=>setAdminNome(e.target.value)} 
 								value={adminNome} 
-								className="adm-input"
+								className="adm-input-update"
 							/>
 
 							<input 
@@ -224,30 +233,38 @@ export default function Navbar({DoPostBtn}){
 								placeholder="Email" 
 								onChange={(e)=>setAdminEmail(e.target.value)} 
 								value={adminEmail} 
-								className="adm-input"
+								className="adm-input-update"
 							/>
 
-							<input 
-								type="password" 
-								placeholder="Senha actual" 
-								onChange={(e)=>setPrevSenha(e.target.value)} 
-								value={prevSenha} 
-								className="adm-input"
-							/>
+							<div className="pass-input-container">
+								<input 
+									type={seePass ? "text" : "password"} 
+									placeholder="Senha actual"
+									onChange={(e)=>setPrevSenha(e.target.value)} 
+									value={prevSenha} 
+									className="adm-input-update"
+									id="prev"
+								/>
+								<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+							</div>
 
-							<input 
-								type="password" 
-								placeholder="Nova senha" 
-								onChange={(e)=>setNewSenha(e.target.value)} 
-								value={newSenha} 
-								className="adm-input"
-							/>
+							<div className="pass-input-container">
+								<input 
+									type={seeNewPass ? "text" : "password"} 
+									placeholder="Nova senha"
+									onChange={(e)=>setNewSenha(e.target.value)} 
+									value={newSenha} 
+									className="adm-input-update"
+									id="new"
+								/>
+								<button type="button" onClick={() => setSeeNewPass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+							</div>
 
 							<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
 							<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
 
 							<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Atualizar"/>
-							{authUpdate && <p className="text-center auth-res"><MdError size={20} color="red"/> {authUpdate.msg}</p>}
+							{updateRes && <p className="text-center auth-res"><MdError size={20} color="red"/> {updateRes.msg}</p>}
 						</form>
 					</Modal>
 				</nav>
