@@ -2,7 +2,7 @@ import "../card/card.css"
 import React from 'react'
 import {useState} from 'react'
 
-export default function Card({title, autor, ano, editora, description, img, id, EdBtn, token}) {
+export default function Card({title, autor, ano, editora, description, id, EdBtn, token}) {
     const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar")
 	const [wasClikedAlready, setWasClikedAlready] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
@@ -12,7 +12,7 @@ export default function Card({title, autor, ano, editora, description, img, id, 
 		if(wasClikedAlready){
 			setIsDeleting(true)
 			setMoreOptionsMsg("Eliminando...")
-        	const URL = `${API_URL}/adm/books/${id}`
+        	const URL = `${API_URL}/admin/book/delete/${id}`
 
 			fetch(URL, {
 				method: 'DELETE',
@@ -50,7 +50,7 @@ export default function Card({title, autor, ano, editora, description, img, id, 
   return (
     <div id="card-container" className="col-12">
         <div id="post-cover-container">
-            <img className="boo-cover" src={img} alt={title}/>
+            <img className="boo-cover" src={`${API_URL}/book/${id}`} alt={title}/>
         </div>
         <div id="text-container">
             <div id="text-about-book">

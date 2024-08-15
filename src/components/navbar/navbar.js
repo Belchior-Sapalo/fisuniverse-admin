@@ -1,36 +1,31 @@
-import React, { useEffect } from "react";
-import {useState} from 'react'
-import '../navbar/navbar.css'
 import Cookies from "js-cookie";
-import { MdError, MdLogout, MdPostAdd, MdAddLink } from "react-icons/md";
-import {FaBars} from 'react-icons/fa'
+import React, { useEffect, useState } from "react";
+import { FaBars, FaEye, FaEyeSlash, FaUserCircle } from 'react-icons/fa';
+import { MdAddLink, MdError, MdLogout, MdPostAdd } from "react-icons/md";
+import { NavLink, useNavigate } from 'react-router-dom';
+import Modal from "../../components/modal/modal";
+import Button from "../../components/submitButton/submitButton";
+import '../navbar/navbar.css';
 import SidebarItem from "../sidebaritem/sidebarItem";
-import {Link, useNavigate} from 'react-router-dom'
-import {FaEye} from "react-icons/fa"
-import Modal from "../../components/modal/modal"
-import Btn from "../../components/btn/Btn"
 const API_URL = "http://192.168.56.1:8000"
 
-export default function Navbar({DoPostBtn}){
+export default function Navbar({CreatePostButton}){
 	const [visible, setVisible] = useState(false)
 	const [adminId, setAdminId] = useState("")
 	const [adminNome, setAdminNome] = useState("")
 	const [adminEmail, setAdminEmail] = useState("")
 	const [adminDate, setAdminDate] = useState("")
 	const [isLoading, setIsLoading] = useState(false)
-	const [updateRes, setUpdateRes] = useState(null)
 	const [updateModalVisible, setUpdateModalVisible] = useState(false)
 	const [selectedFile, setSelectedFile] = useState(null)
 	const [openProfile, setOpenProfile] = useState(false)
 	const [prevSenha, setPrevSenha] = useState("")
 	const [newSenha, setNewSenha] = useState("")
-	const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar perfil")
+	const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar")
 	const [wasClikedAlready, setWasClikedAlready] = useState(false)
-	const [isDeleting, setIsDeleting] = useState(false)
 	const [seePass, setSeePass] = useState(false)
 	const [seeNewPass, setSeeNewPass] = useState(false)
-	const [deleteRes, setDeleteRes] = useState(null)
-
+	const [resMsg, setResMsg] = useState('')
 	const [token, setToken] = useState("")
 	const navigate = useNavigate()
 
@@ -47,11 +42,11 @@ export default function Navbar({DoPostBtn}){
 		setSelectedFile(e.target.files[0])
 	}
 
-	function handlerUpdate(e){
+	function handleUpdateProfile(e){
 		e.preventDefault()
-		setUpdateRes(null)
+		setResMsg(null)
 		setIsLoading(true)
-		const URL = `${API_URL}/adm/atualizar_perfil/${adminId}`
+		const URL = `${API_URL}/admin/auth/update/${adminId}`
 
 		const formData = new FormData()
 		formData.append('nome', adminNome);
@@ -73,20 +68,20 @@ export default function Navbar({DoPostBtn}){
 				Cookies.set('adminName', adminNome)
 				Cookies.set('adminEmail', adminEmail)
 				localStorage.setItem('lastMsg', json.msg)
-				reload(false)
+				handleReloadWindow(false)
 			}else{
 				setIsLoading(false)
-				setUpdateRes(json)
-				setTimeout(()=>{setUpdateRes("")}, 5000)
+				setResMsg(json.msg)
+				setTimeout(()=>{setResMsg("")}, 5000)
 			}
 		})
 	}
 
 	function handlerDeleteProfile(){
 		if(wasClikedAlready){
-			setIsDeleting(true)
-			setMoreOptionsMsg("Eliminando perfil...")
-			const URL = `${API_URL}/adm/eliminar_perfil/${adminId}`
+			setIsLoading(true)
+			setMoreOptionsMsg("Eliminando...")
+			const URL = `${API_URL}/admin/auth/delete/${adminId}`
 
 			fetch(URL, {
 				method: 'DELETE',
@@ -97,23 +92,22 @@ export default function Navbar({DoPostBtn}){
 			.then((res)=>res.json())
 			.then((json)=>{
 				if(json.status == 200){
-					deleteAllCookies()
-					setIsDeleting(false)
+					utilDeleteAllCookies()
+					setIsLoading(false)
 					window.location.replace('/')
 				}else{
 					setIsLoading(false)
-					setUpdateRes(json)
-					setIsDeleting(false)
+					setResMsg(json.msg)
 				}
 			})
 		}else{
 			setWasClikedAlready(true)
 			setMoreOptionsMsg("Certeza?")
-			setTimeout(()=>{setWasClikedAlready(false); setMoreOptionsMsg("Eliminar perfil")}, 4000)
+			setTimeout(()=>{setWasClikedAlready(false); setMoreOptionsMsg("Eliminar")}, 4000)
 		}
 	}
 
-	function deleteAllCookies(){
+	function utilDeleteAllCookies(){
 		Cookies.remove('token')
 		Cookies.remove('adminName')
 		Cookies.remove("adminEmail")
@@ -121,17 +115,14 @@ export default function Navbar({DoPostBtn}){
 		Cookies.remove('adminId')
 	}
 
-	const LogoutBtn = ()=>{
-		function logout(){
+	const LogoutButton = ()=>{
+		function handleLogoutAdmin(){
 			Cookies.remove('token')
 			window.location.replace('/')
 		}
 		return(
-			<button className="btn logout-btn" onClick={()=>logout()}><MdLogout size='20'/></button>
+			<button className="btn logout-btn" onClick={()=>handleLogoutAdmin()}><MdLogout size='20'/></button>
 		)
-	}
-	function OpenMenu(){
-		setVisible(true)
 	}
 
 	function CloseMenu(){
@@ -152,48 +143,69 @@ export default function Navbar({DoPostBtn}){
 		setNewSenha("")
 		setPrevSenha("")
 		setWasClikedAlready(false)
-		setMoreOptionsMsg("Eliminar perfil")
-		setUpdateRes("")
+		setMoreOptionsMsg("Eliminar")
+		setResMsg('')
 		setSeeNewPass(false)
 		setSeePass(false)
+		setSelectedFile(null)
 	}
 
-	function closeProfile(){
+	function utilHandleCloseProfile(){
 		setOpenProfile(false)
 		setWasClikedAlready(false)
 		setMoreOptionsMsg("Eliminar perfil")
-		setIsDeleting(false)
+		setIsLoading(false)
+		setResMsg('')
 	}
-	function reload(isAnError){
+
+	function handleReloadWindow(isAnError){
 		localStorage.setItem('reloaded', 'true')
         localStorage.setItem('isAnError', isAnError)
 		document.location.reload()
 	}
+
 	return(
 		<div id="header">
 				<nav id="nav-bar">
 					<div id={visible ? "sidebar-visible": "sidebar-invisible"} >
-						<Link onClick={()=>CloseMenu()} to="/painel-adm/posts" className="sidebarLink">
+						<NavLink
+							onClick={()=>CloseMenu()} 
+							to="/admin/posts" 
+							className="sidebar-link"
+							style={({isActive}) => ({
+								color: isActive ? "white": "#027373"
+							})}
+						>
 							<SidebarItem isVisible={visible} icon={<MdPostAdd size={25}/>} title="Publicações"/>
-						</Link>
-						<Link onClick={()=>CloseMenu()} to="/painel-adm/anexos" className="sidebarLink">
+						</NavLink>
+
+						<NavLink 
+							onClick={()=>CloseMenu()} 
+							to="/admin/books" 
+							className="sidebar-link"
+							style={({isActive}) => ({
+								color: isActive ? "white": "#027373"
+							})}
+						>
 							<SidebarItem isVisible={visible} icon={<MdAddLink size={25}/>} title="Anexos"/>
-						</Link>
+						</NavLink>
 					</div>
 					<div className="logo-container">
 						<FaBars id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/>
 						<h4 className="logo-link">Vic<span style={{color: "var(--color-3)"}}>Blog</span></h4>
 					</div>
 					<div id="adm-actions" className="d-flex gap-2">
-						{DoPostBtn}
-						{LogoutBtn()}
+						{CreatePostButton}
+						{LogoutButton()}
 						
 					</div>
-					<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`http://192.168.56.1:8000/adm/get_profile_picture/${adminId}`}>
-					</img>
-					<Modal isOpen={openProfile} setIsOpen={()=>closeProfile()}>
+					<div id="go-to-profile-container">
+						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
+						</img>
+					</div>
+					<Modal isOpen={openProfile} setIsOpen={()=>{utilHandleCloseProfile()}}>
 						<div id="profile-container">
-							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`http://192.168.56.1:8000/adm/get_profile_picture/${adminId}`}>
+							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`${API_URL}/admin/get-picture/${adminId}`}>
 							</img>
 
 							<div id="profile-more-info">
@@ -205,18 +217,18 @@ export default function Navbar({DoPostBtn}){
 							<div id="more-options">
 								<button onClick={()=>{
 									setOpenProfile(false); setUpdateModalVisible(true)
-								}} className="btn btn-success">Editar perfil</button>
+								}} className="btn btn-success">Editar</button>
 
-								<button disabled={isDeleting} onClick={()=>handlerDeleteProfile()} className="btn btn-danger">{moreOptionsMsg}</button>
+								<button disabled={isLoading} onClick={()=>handlerDeleteProfile()} className="btn btn-danger">{moreOptionsMsg}</button>
 							</div>
 
-							{deleteRes && <p className="text-center auth-res"><MdError size={20} color="red"/> {deleteRes.msg}</p>}
+							{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
 						</div>
 					</Modal>
 					<Modal isOpen={updateModalVisible} setIsOpen={()=>{closeModalUpdate()}}>
 						<form 
 							id="update-profile-form" 
-							onSubmit={(e)=>handlerUpdate(e)} 
+							onSubmit={(e)=>handleUpdateProfile(e)} 
 						>
 							<h4>Atualizar conta administrativa</h4>
 							
@@ -245,7 +257,11 @@ export default function Navbar({DoPostBtn}){
 									className="adm-input-update"
 									id="prev"
 								/>
-								<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+								<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
+									{
+										seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
+									}
+								</button>
 							</div>
 
 							<div className="pass-input-container">
@@ -257,14 +273,23 @@ export default function Navbar({DoPostBtn}){
 									className="adm-input-update"
 									id="new"
 								/>
-								<button type="button" onClick={() => setSeeNewPass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+								<button type="button" onClick={() => setSeeNewPass(prev => !prev)} className="btn">
+									{
+										seeNewPass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
+									}
+								</button>
 							</div>
 
-							<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
-							<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
+							<div>
+								<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+									<p>Foto de perfil</p>
+									<FaUserCircle/>
+								</label>
+								<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+							</div>
 
-							<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Atualizar"/>
-							{updateRes && <p className="text-center auth-res"><MdError size={20} color="red"/> {updateRes.msg}</p>}
+							<Button isLoading={isLoading} value="Atualizar"/>
+							{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/>{resMsg}</p>}
 						</form>
 					</Modal>
 				</nav>

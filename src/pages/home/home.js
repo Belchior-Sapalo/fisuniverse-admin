@@ -1,31 +1,43 @@
-import React, { useState } from "react";
-import '../home/home.css'
-import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
-import Modal from "../../components/modal/modal";
-import Btn from '../../components/btn/Btn';
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash, FaUserCircle } from "react-icons/fa";
 import { MdAttachEmail, MdError } from "react-icons/md";
-import {FaEye} from "react-icons/fa"
+import { useNavigate } from 'react-router-dom';
+import Modal from "../../components/modal/modal";
+import Button from '../../components/submitButton/submitButton';
+import '../home/home.css';
 
 export default function Home(){
 	const [email, setEmail] = useState('')
 	const [senha, setSenha] = useState('')
-	const [auth, setAuth] = useState(null)
-	const [nomeSignIn, setNomeSignIn] = useState('')
-	const [emailSignIn, setEmailSignIn] = useState('')
-	const [senhaSignIn, setSenhaSignIn] = useState('')
-	const [authSignin, setAuthSignin] = useState(null)
-	const [isOpenLoginForm, setIsOpenLoginForm] = useState(true)
-	const [isOpenSignInForm, setIsOpenSignInForm] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
-	const [isLoadingMailSend, setIsLoadingMailSend] = useState(false)
-	const [isOpen, setIsOpen] = useState(false)
-	const [emailRecover, setEmailRecover] = useState('')
-	const [isSent, setIsSent] = useState(false)
+	const [resMsg, setResMsg] = useState('')
+	const [nome, setNome] = useState('')
 	const [selectedFile, setSelectedFile] = useState(null)
-	const [recoverMsg, setRecoverMsg] = useState('')
-	const API_URL = "http://192.168.56.1:8000"
+	const [isOpenAuthForm, setIsOpenAuthForm] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingEmailCheck, setIsLoadingEmailCheck] = useState(false)
+	const [isOpenModalChekEmail, setIsOpenModalChekEmail] = useState(false)
+	const [isOpenRecoverForm, setIsOpenRecoverForm] = useState(false)
 	const [seePass, setSeePass] = useState(false)
+	const [recoverQuestion, setRecoverQuestion] = useState("")
+	const [recoverAnswer, setRecoverAnswer] = useState("")
+	const [wasChcked, setWasChcked] = useState(false)
+	const API_URL = "http://localhost:8000"
+
+	function utilHandleChangeAuthForm(){
+		utilHandleClearAuthStates()
+		setIsOpenAuthForm(!isOpenAuthForm); 
+		setIsLoading(false)
+		setSeePass(false)
+	}
+
+	function utilHandleCloseModal(){
+		if(isOpenModalChekEmail || isOpenRecoverForm){
+			setIsOpenModalChekEmail(false)
+			setIsOpenRecoverForm(false)
+			utilHandleClearAuthStates()
+		}
+	}
 
 	const handlerFileChange = (e) => {
 		setSelectedFile(e.target.files[0])
@@ -33,12 +45,41 @@ export default function Home(){
 
 	const navigate = useNavigate()
 
-	function handlerLogin(e){
+	
+	function handleSignin(e){
 		e.preventDefault()
 		setIsLoading(true)
-		setAuth(null)
-		const URL = `${API_URL}/adm/login_adm`
+		const URL = `${API_URL}/admin/auth/create`
 
+		const formData = new FormData()
+		formData.append('nome', nome);
+		formData.append('email', email);
+		formData.append('question', recoverQuestion)
+		formData.append('answer', recoverAnswer)
+		formData.append('senha', senha);
+		formData.append('photo', selectedFile)
+
+		fetch(URL, {
+			method: 'POST',
+			body: formData
+		})
+		.then((res)=>res.json())
+		.then((json)=>{
+			if(json.status == 200){
+				setIsLoading(false)
+				utilHandleClearAuthStates()
+				setIsOpenAuthForm(!isOpenAuthForm)
+			}else{
+				setResMsg(json.msg)
+				setIsLoading(false)
+			}
+		})
+	}
+
+	function handleLogin(e){
+		e.preventDefault()
+		setIsLoading(true)
+		const URL = `${API_URL}/admin/auth/login`
 		const dados = {
 			'email': email,
 			'senha': senha
@@ -54,65 +95,39 @@ export default function Home(){
 		.then((res)=>res.json())
 		.then((json)=>{
 			if(json.status == 200){
-				Cookies.set('token', json.token)
-				Cookies.set('adminId', json.admin.id)
-				Cookies.set('adminName', json.admin.nome)
-				Cookies.set('adminEmail', json.admin.email)
-				Cookies.set('adminDate', json.admin.createdAt)
-
-				navigate(`/painel-adm/posts`)
-				setIsLoading(false)
+				utilHandleSaveAdmin(json)
+				window.location.replace('/admin/posts')
 			}else{
-				setAuth(json)
-				setIsLoading(false)
+				setResMsg(json.msg)
 			}
-		})
-
-	}
-
-	function handlerSignin(e){
-		e.preventDefault()
-		setAuthSignin(null)
-		setIsLoading(true)
-		const URL = `${API_URL}/adm/signin_adm`
-
-		const formData = new FormData()
-		formData.append('nome', nomeSignIn);
-		formData.append('email', emailSignIn);
-		formData.append('senha', senhaSignIn);
-		formData.append('photo', selectedFile)
-
-		fetch(URL, {
-			method: 'POST',
-			body: formData
-		})
-		.then((res)=>res.json())
-		.then((json)=>{
-			if(json.status == 200){
-				setNomeSignIn('')
-				setEmailSignIn('')
-				setSenhaSignIn('')
-				setAuthSignin('')
-				setIsOpenSignInForm(!isOpenSignInForm)
-				setIsOpenLoginForm(!isOpenLoginForm)
-				setIsLoading(false)
-			}else{
-				setIsLoading(false)
-				setAuthSignin(json)
-			}
+			setIsLoading(false)
 		})
 	}
 
+	function utilHandleSaveAdmin(response){
+		Cookies.set('token', response.token)
+		Cookies.set('adminId', response.admin.id)
+		Cookies.set('adminName', response.admin.nome)
+		Cookies.set('adminEmail', response.admin.email)
+		Cookies.set('adminDate', response.admin.createdAt)
+	}
 
-	function handlerRecoverPass(e){
+	function utilHandleClearAuthStates(){
+		setEmail("")
+		setSenha("")
+		setNome("")
+		setResMsg("")
+		setRecoverQuestion('')
+		setRecoverAnswer('')
+	}
+
+	function handleVerifyEmail(e){
 		e.preventDefault();
-		setIsLoadingMailSend(true)
+		setIsLoadingEmailCheck(true)
+		const URL =`${API_URL}/admin/auth/email-check`
 		const dados = {
-			to: emailRecover,
-			subject: "Recuperação de senha",
+			email: email
 		}
-
-		const URL = `${API_URL}/adm/verify_email`
 
 		fetch(URL, {
 			method: 'POST',
@@ -121,30 +136,63 @@ export default function Home(){
 			},
 			body: JSON.stringify(dados)
 		}).then(res=> res.json()).then(json => {
-			if(json.status == 200){
-				setIsLoadingMailSend(false)
-				setIsSent(true)
-				setRecoverMsg(json.msg)
-				setEmailRecover('')
-		
-				setTimeout(()=>{setIsOpen(!isOpen); setRecoverMsg("")}, 3000)
+			if(json.isVerifyed){
+				setIsLoadingEmailCheck(false)
+				setWasChcked(true)
+				setResMsg(json.msg)
+				setRecoverQuestion(json.question)
+				setTimeout(() =>  setResMsg(''), 2000)
+				setIsOpenModalChekEmail(false)
+				setIsOpenRecoverForm(true)
 			}else{
-				setIsLoadingMailSend(false)
-				setRecoverMsg(json.msg)
-				setIsSent(false)
+				setWasChcked(false)
+				setResMsg(json.msg)
+				setIsLoadingEmailCheck(false)
+				setTimeout(() =>  setResMsg(''), 2000)
+			}
+		})
+
+	}
+
+	function handleVerifyrecoverAnswer(e){
+		e.preventDefault();
+		setIsLoadingEmailCheck(true)
+		const dados = {
+			answer: recoverAnswer
+		}
+
+		const URL = `${API_URL}/admin/auth/answer-check/${email}`
+
+		fetch(URL, {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json'
+			},
+			body: JSON.stringify(dados)
+		}).then(res=> res.json()).then(json => {
+			if(json.auth){
+				setWasChcked(true)
+				navigate(`/admin/auth/recover?q=${email}`)
+			}else{
+				setIsLoadingEmailCheck(false)
+				setResMsg(json.msg)
+				setWasChcked(false)
+				setTimeout(() => setResMsg(""), 3000)
 			}
 		})
 	}
 
+	
 	return(
 		<section className="sec" id="login_sigin_sec">
 			<form 
 				id="login_sigin_form" 
-				onSubmit={(e)=>handlerLogin(e)} 
-				style={{display: isOpenLoginForm? "flex": "none"}}
+				onSubmit={(e)=>handleLogin(e)} 
+				style={{display: isOpenAuthForm? "flex": "none"}}
 			>
 				<h1>Bem vindo</h1>
 				<input 
+					required
 					type="email" 
 					placeholder="Email" 
 					onChange={(e)=>setEmail(e.target.value)} 
@@ -154,6 +202,7 @@ export default function Home(){
 
 				<div id="pass-input-container">
 					<input 
+						required
 						type={seePass ? "text" : "password"} 
 						placeholder="Senha"
 						onChange={(e)=>setSenha(e.target.value)} 
@@ -161,53 +210,57 @@ export default function Home(){
 						className="adm-input"
 						id="pass"
 					/>
-					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
+						{
+							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
+						}
+					</button>
 				</div>
 				
-				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
-				{auth && <p className="text-center auth-res"><MdError size={20} color="red"/> {auth.msg}</p>}
+				<Button isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
+				{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
 				<p 
 					className="signin_login_option" 
-					onClick={()=>{
-						setAuth("")
-						setIsOpenLoginForm(!isOpenLoginForm); 
-						setIsOpenSignInForm(!isOpenSignInForm); 
-						setIsLoading(false)
-						setSeePass(false)
-						setSenha("")
-					}}>
+					onClick={()=>{utilHandleChangeAuthForm()}}
+				>
 					Não tem uma conta? <span style={{color: "blue"}}>Criar conta</span>
 				</p>
-				<p className="repor_pass_link" onClick={()=>setIsOpen(!isOpen)}>
+				<p 
+					className="repor_pass_link" 
+					onClick={()=>{setIsOpenModalChekEmail(!isOpenModalChekEmail); utilHandleClearAuthStates()}}
+				>
 					Esqueceu a palavra passe? <span style={{color: "red"}}>Recuperar conta</span>
 				</p>
 			</form>
 
 			<form 
 				id="login_sigin_form" 
-				onSubmit={(e)=>handlerSignin(e)} 
-				style={{display: isOpenSignInForm? "flex": "none"}}
+				onSubmit={(e)=>handleSignin(e)} 
+				style={{display: !isOpenAuthForm? "flex": "none"}}
 			>
 				<h4>Crie sua conta administrativa</h4>
 				
 				<input 
+					required
 					type="text" 
 					placeholder="Nome" 
-					onChange={(e)=>setNomeSignIn(e.target.value)} 
-					value={nomeSignIn} 
+					onChange={(e)=>setNome(e.target.value)} 
+					value={nome} 
 					className="adm-input"
 				/>
 
 				<input 
+					required
 					type="email" 
 					placeholder="Email" 
-					onChange={(e)=>setEmailSignIn(e.target.value)} 
-					value={emailSignIn} 
+					onChange={(e)=>setEmail(e.target.value)} 
+					value={email} 
 					className="adm-input"
 				/>
 
 				<div id="pass-input-container">
 					<input 
+						required
 						type={seePass ? "text" : "password"} 
 						placeholder="Senha"
 						onChange={(e)=>setSenha(e.target.value)} 
@@ -215,32 +268,51 @@ export default function Home(){
 						className="adm-input"
 						id="pass"
 					/>
-					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn"><FaEye id="see-pass-icon"/></button>
+					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
+						{
+							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
+						}
+					</button>
 				</div>
 
-				<input required type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
-				<p style={{fontSize: "12px"}}>Obs: A foto deve ter no máximo 1MB (jpeg, png, jpg)</p>
+				<input 
+					required
+					type="text" 
+					placeholder="Pergunta de recuperação de conta" 
+					onChange={(e)=>setRecoverQuestion(e.target.value)} 
+					value={recoverQuestion} 
+					className="adm-input"
+				/>
 
-				<Btn isLoading={isLoading} setIsLoading={()=>setIsLoading(isLoading)} value="Criar conta"/>
-				{authSignin && <p className="text-center auth-res"><MdError size={20} color="red"/> {authSignin.msg}</p>}
+				<input 
+					required
+					type="text" 
+					placeholder="Resposta (a resposta é usada para recuperar a conta!)" 
+					onChange={(e)=>setRecoverAnswer(e.target.value)} 
+					value={recoverAnswer} 
+					className="adm-input"
+				/>
+
+				<div>
+					<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+						<p>Foto de perfil</p>
+						<FaUserCircle/>
+					</label>
+					<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+				</div>
+
+				<Button isLoading={isLoading} value="Criar conta"/>
+				{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
 				<p 
 					className="signin_login_option"  
-					onClick={()=>{
-						setAuthSignin(''); 
-						setIsOpenLoginForm(!isOpenLoginForm); 
-						setIsOpenSignInForm(!isOpenSignInForm); 
-						setIsLoading(false); 
-						setAuth('')
-						setSenha("")
-						setSeePass(false)}
-					}
+					onClick={()=>{utilHandleChangeAuthForm()}}
 						
 					>Já tem uma conta? <span style={{color: "blue"}}>Iniciar sessão</span>
 				</p>
 			</form>
 
-			<Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
-				<form id="recover_pass_form" onSubmit={(e)=>handlerRecoverPass(e)}>
+			<Modal isOpen={isOpenModalChekEmail} setIsOpen={() => utilHandleCloseModal()}>
+				<form id="recover_pass_form" onSubmit={(e)=>handleVerifyEmail(e)}>
 					<div id="form-recover-header">
 						<h4>Repor palavra passe <span><MdAttachEmail/></span></h4>
 					</div>
@@ -248,15 +320,38 @@ export default function Home(){
 						placeholder="Insira seu email" 
 						type="email"
 						className="recover_input"
-						onChange={(e)=>setEmailRecover(e.target.value)}
-						value={emailRecover}
+						onChange={(e)=>setEmail(e.target.value)}
+						value={email}
 						required
 						autoFocus
 					/>
 
-					<Btn isLoading={isLoadingMailSend} setIsLoading={()=>setIsLoadingMailSend(!isLoadingMailSend)} value="Enviar email de recuperação"/>
+					<Button isLoading={isLoadingEmailCheck} value="Verificar email"/>
 
-					{isSent? <p className="text-center" style={{color: "green"}}>{recoverMsg}</p>: <p className="text-center" style={{color: "red"}}>{recoverMsg}</p> }
+					{wasChcked? <p className="text-center" style={{color: "green"}}>{resMsg}</p>: <p className="text-center" style={{color: "red"}}>{resMsg}</p> }
+				</form>
+			</Modal>
+
+			<Modal isOpen={isOpenRecoverForm} setIsOpen={() => utilHandleCloseModal()}>
+				<form id="recover_pass_form" onSubmit={(e)=>handleVerifyrecoverAnswer(e)}>
+					<div id="form-recover-header">
+						<h4>Repor palavra passe <span><MdAttachEmail/></span></h4>
+					</div>
+					<div id="recoverQuestion-container">
+						{recoverQuestion}
+					</div>
+					<input 
+						placeholder="Resposta" 
+						type="text"
+						className="recover_input"
+						onChange={(e)=>setRecoverAnswer(e.target.value)}
+						value={recoverAnswer}
+						required
+						autoFocus
+					/>
+
+					<Button isLoading={isLoadingEmailCheck}  value="Enviar"/>
+					{wasChcked ? <p className="text-center" style={{color: "green"}}>{resMsg}</p>: <p className="text-center" style={{color: "red"}}>{resMsg}</p> }
 				</form>
 			</Modal>
 		</section>

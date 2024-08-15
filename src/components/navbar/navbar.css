@@ -11,8 +11,13 @@
 	left: 0;
 	padding: 0 5% 0 1.8%;
 	height: 60px;
-	background-color: rgb(255, 255, 255);
+	background-color: #172026;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.045);
+}
+
+#go-to-profile-container{
+	background-color: white;
+	border-radius: 50%;
 }
 
 #go-to-profile{
@@ -53,6 +58,7 @@
 #toggleSidebarBtn{
 	font-size: 20px;
 	cursor: pointer;
+	color: white;
 }
 
 .logo-link{
@@ -64,7 +70,7 @@
 }
 
 #sidebar-visible{
-	background-color: rgb(255, 255, 255);
+	background-color: #172026;
 	height: 100vh;
 	position: absolute;
 	top: 60px;
@@ -75,7 +81,6 @@
 }
 
 #sidebar-invisible{
-	background-color: rgb(255, 255, 255);
 	height: 100vh;
 	position: absolute;
 	top: 60px;
@@ -83,6 +88,11 @@
 	transition: var(--general-transition);
 	border-right: 1px solid rgba(12, 12, 12, 0.227);
 	width: 8%;
+}
+
+.sidebar-link{
+	text-decoration: none;
+	color: white;
 }
 
 .nav-list{
@@ -136,10 +146,25 @@
     outline: none;
     padding: 15px;
 	margin: 10px;
-	border-radius: 5px;
     border: none;
+	border-left: 2px solid var(--color-6);
 	width: 90%;
 }
+
+#update-profile-form input[type="file"]{
+	display: none;
+}
+
+#choise-file-btn{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+ }
+ 
+ #choise-file-btn p{
+	 margin: 0;
+ }
 
 .pass-input-container{
 	margin: 10px;

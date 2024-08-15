@@ -1,80 +1,84 @@
-import React from "react";
-import '../Anexos/anexos.css'
-import Navbar from "../../components/navbar/navbar";
-import {useState, useEffect} from 'react'
-import {useNavigate} from 'react-router-dom'
 import Cookies from "js-cookie";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd, MdEco } from "react-icons/md";
-import Modal from "../../components/modal/modal";
-import Msg from "../../components/msg/msg";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { FaImage } from "react-icons/fa";
+import { MdAdd } from "react-icons/md";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Card from "../../components/card/card";
 import Message from "../../components/message/message";
+import Modal from "../../components/modal/modal";
+import Navbar from "../../components/navbar/navbar";
+import Button from "../../components/submitButton/submitButton";
+import './booksManager.css';
 
-export default function AnexosManager(){
-	const [res, setRes] = useState('')
+export default function BooksManager(){
+	const [resMsg, setResMsg] = useState('')
 	const [token, setToken] = useState('')
-	const [isOpen, setIsOpen] = useState(false)
+	const [isOpenFormCreate, setIsOpenFormCreate] = useState(false)
 	const [postToEdit, setPostToEdit] = useState('')
-	const navigate = useNavigate()
-	const [formPost, setFormPost] = useState(false)
 	const [autor, setAutor] = useState('')
 	const [title, setTitle] = useState('')
 	const [year, setYear] = useState("")
 	const [editora, setEditora] = useState("")
 	const [description, setDescription] = useState('')
+	const [link, setLink] = useState("")
 	const [selectedFile, setSelectedFile] = useState(null)
 	const [showMsg, setShowMsg] = useState(false)
 	const [havebooksInDatabase, setHavebooksInDatabase] = useState(false)
-	const [isAnerrorMessage, setIsAnErrorMessage] = useState(false)
-	const [link, setLink] = useState("")
-	const [books, setBooks] = useState([])
+	const [isAnErrorMessage, setIsAnErrorMessage] = useState(false)
+	const [booksList, setBooksList] = useState([])
 	const [isAnError, setIsAnError] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const location = useLocation()
 	const maxLength = 250;
-	const nomeAdm = location.state?.nomeAdm;
 	const API_URL = "http://localhost:8000"
 
 	useEffect(()=>{
+		handleShowMessageToUser()
+		handleGetAllBooks()
+		setToken(Cookies.get('token'))
+	}, [])
+
+	function handleGetAllBooks(){
+		const URL = `${API_URL}/books`
+		fetch(URL)
+		.then((res)=>res.json())
+		.then((json)=>{
+			if(json.status != 404){
+				setBooksList(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+				setHavebooksInDatabase(true)
+			}else{
+				setHavebooksInDatabase(false)
+			}
+		})
+	}
+
+	function handleShowMessageToUser(){
 		if(localStorage.getItem("reloaded") === 'true'){
 			if(localStorage.getItem("isAnError") === 'true'){
 				setIsAnError(true)
 			}else{
 				setIsAnError(false)
 			}
-			setRes(localStorage.getItem("lastMsg"))
+			setResMsg(localStorage.getItem("lastMsg"))
 			setShowMsg(true)
             setTimeout(()=>{setShowMsg(false)}, 3000)
 			localStorage.removeItem("reloaded")
 			localStorage.removeItem('lastMsg')
 			localStorage.removeItem("isAnError")
 		}
-		const URL = `${API_URL}/books`
-		fetch(URL)
-		.then((res)=>res.json())
-		.then((json)=>{
-			if(json.status != 404){
-				setBooks(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
-				setHavebooksInDatabase(true)
-			}else{
-				setHavebooksInDatabase(false)
-			}
-		})
-		setToken(Cookies.get('token'))
-	}, [])
+	}
 
-
-	const handlerFileChange = (e) => {
+	const handleFileChange = (e) => {
 		setSelectedFile(e.target.files[0])
 	}
 
-    function handlerEditBook(e){
+    function handleUpdateBook(e){
+		setIsLoading(true)
 		e.preventDefault()
-        const URL = `${API_URL}/adm/books/${postToEdit}`
+        const URL = `${API_URL}/admin/book/update/${postToEdit}`
 
 		const formData = new FormData()
-		formData.append('autorName', autor);
+		formData.append('autor', autor);
 		formData.append('title', title);
 		formData.append('ano', year);
 		formData.append('editora', editora);
@@ -91,61 +95,53 @@ export default function AnexosManager(){
 		}).then(res => res.json()).then(json => {
 			if(json.status == 500 || json.status == 404 || json.status == 400 || json.status == 401){
 				setIsAnErrorMessage(true)
-				setRes(json.msg)
+				setIsLoading(false)
+				setResMsg(json.msg)
 			}else{
-				reload(false)
+				setIsLoading(false)
+				handleReloadWindow(false)
 				localStorage.setItem('lastMsg', json.msg)
+				utilHandleClearStates()
 			}
 		})
     }
 
-	const EditBookBtn = (book) => {
+	const UpdateBookButton = (book) => {
 		return(
-			<button onClick={()=>getIdBookToEditAndLastValues(book.id, book.autorName, book.title, book.ano, book.editora, book.description, book.link)}  className="btn btn-primary adm-options-btn" >Editar</button>
+			<button onClick={()=>utilHandleGetIdBookToEditAndLastValues(book)} className="btn btn-primary adm-options-btn">Editar</button>
 		)
 	}
-
 	
-	function getIdBookToEditAndLastValues(id, autor, title, ano, editora, description, link){
-		setFormPost(true)
-		setPostToEdit(id)
-		setAutor(autor)
-		setTitle(title)
-		setYear(ano)
-		setEditora(editora)
-		setDescription(description)
-		setLink(link)
+	function utilHandleGetIdBookToEditAndLastValues(book){
+		setIsOpenFormCreate(true)
+		setPostToEdit(book.id)
+		setAutor(book.autor)
+		setTitle(book.title)
+		setYear(book.ano)
+		setEditora(book.editora)
+		setDescription(book.description)
+		setLink(book.link)
 	}
 
-  	const DoPostBtn = ()=>{
-		const [formPost, setFormPost] = useState(false)
-		const [autor, setAutor] = useState('')
-		const [title, setTitle] = useState('')
-    	const [year, setYear] = useState("")
-    	const [editora, setEditora] = useState("")
-		const [description, setDescription] = useState('')
-		const [link, setLink] = useState("")
+  	const CreateBookButton = ()=>{
+		const [isOpenFormCreate, setIsOpenFormCreate] = useState(false)
 		const [selectedFile, setSelectedFile] = useState(null)
-		const [res, setRes] = useState('')
-		const [isAnerrorMessage, setIsAnErrorMessage] = useState(false)
-		const [token, setToken] = useState('')
+		const [isAnErrorMessage, setIsAnErrorMessage] = useState(false)
+		const [isLoading, setIsLoading] = useState(false)
 		const maxLength = 250;
 
-		useEffect(()=>{
-			setToken(Cookies.get('token'))
-		}, [])
-
-		const handlerFileChange = (e) => {
+		const handleFileChange = (e) => {
 			setSelectedFile(e.target.files[0])
 		}
 
-		function publicar(e){
+		function handleCreateBook(e){
 			e.preventDefault()
+			const id = Cookies.get("adminId")
 			const token = Cookies.get('token')
-			const URL = `${API_URL}/adm/addBook`
+			const URL = `${API_URL}/admin/book/create/${id}`
 
 			const formData = new FormData()
-			formData.append('autorName', autor);
+			formData.append('autor', autor);
 			formData.append('title', title);
 			formData.append('ano', year);
 			formData.append('editora', editora);
@@ -162,21 +158,22 @@ export default function AnexosManager(){
 			}).then(res => res.json()).then(json => {
 				if(json.status == 500 || json.status == 400 || json.status == 401){
 					setIsAnErrorMessage(true)
-					setRes(json.msg)
+					setResMsg(json.msg)
 				}else{
-				 	reload(false)
+				 	handleReloadWindow(false)
 					localStorage.setItem('lastMsg', json.msg)
+					utilHandleClearStates()
 				}
 			})
 		}
 		
 		return(
 			<div>
-				<button onClick={()=>setFormPost(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
-				<Modal isOpen={formPost} setIsOpen={()=>setFormPost(!formPost)}>
-					<form onSubmit={(e)=>publicar(e)} className="form-add-post-anexos" encType="multipart/form-data">
+				<button onClick={()=>setIsOpenFormCreate(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
+				<Modal isOpen={isOpenFormCreate} setIsOpen={()=>{setIsOpenFormCreate(!isOpenFormCreate); utilHandleClearStates()}}>
+					<form onSubmit={(e)=>handleCreateBook(e)} className="form-add-post-anexos" encType="multipart/form-data">
             			<h5>Poste um novo livro</h5>
-						<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-add-post-input"/>
+						<input onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor(opcional)" className="form-add-post-input"/>
 						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-add-post-input"/>
 						<input required onChange={(e)=>setYear(e.target.value)} value={year} type="text" placeholder="Ano de publicação" className="form-add-post-input"/>
 						<input required onChange={(e)=>setEditora(e.target.value)} value={editora} type="text" placeholder="Editora" className="form-add-post-input"/>
@@ -185,17 +182,32 @@ export default function AnexosManager(){
 							<p >{description.length}/{maxLength}</p>
 						</div>
 						<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-add-post-input"/>
-						<input type="file" required onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
-						<p style={{fontSize: "12px"}}>Obs: A capa deve ter no máximo 1MB (jpeg, png, jpg)</p>
-						<button type="submit" className="btn btn-success add-post-btn">Publicar</button>
-						<p className="error-message" style={{display: isAnerrorMessage ? "block" : "none"}}>{res}</p>
+						<div>
+							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+								<p>Capa do livro</p>
+								<FaImage/>
+							</label>
+							<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+						</div>
+						<Button isLoading={isLoading} value="Publicar"/>
+						<p className="error-message" style={{display: isAnErrorMessage ? "block" : "none"}}>{resMsg}</p>
 					</form>
 				</Modal>
 			</div>
 		)
 	}
 
-	function reload(isAnError){
+	function utilHandleClearStates(){
+		setResMsg("")
+		setAutor("")
+		setTitle("")
+		setYear('')
+		setEditora('')
+		setDescription('')
+		setLink('')
+	}
+
+	function handleReloadWindow(isAnError){
 		localStorage.setItem('reloaded', 'true')
         localStorage.setItem('isAnError', isAnError)
 		document.location.reload()
@@ -203,21 +215,21 @@ export default function AnexosManager(){
 
     return(
         <section id="admPanel-section-anexos">
-            <Navbar DoPostBtn={DoPostBtn()}/>
+            <Navbar CreatePostButton={CreateBookButton()}/>
             <div id="posts-container" className="container-fluid">
 			<Message isOpen={showMsg} isAnError={isAnError}>
-				<h5>{res}</h5>
+				<h5>{resMsg}</h5>
 			</Message>	
 				{
-					havebooksInDatabase ? books.map(book => {
+					havebooksInDatabase ? booksList.map(book => {
 						return(
-							<Card title={book.title} autor={book.autorName} editora={book.editora} ano={book.ano} img={book.cover} description={book.description} id={book.id} EdBtn={EditBookBtn(book)} token={token}/>
+							<Card title={book.title} autor={book.autor} editora={book.editora} ano={book.ano} description={book.description} id={book.id} EdBtn={UpdateBookButton(book)} token={token}/>
 						)
 					}) : <h4>Publique o seu primeiro livro!</h4> 
 				}
 			</div>
-			<Modal isOpen={formPost} setIsOpen={()=>setFormPost(!formPost)}>
-				<form onSubmit={(e)=>handlerEditBook(e)} className="form-add-post-anexos" encType="multipart/form-data">
+			<Modal isOpen={isOpenFormCreate} setIsOpen={()=>{setIsOpenFormCreate(!isOpenFormCreate); utilHandleClearStates()}}>
+				<form onSubmit={(e)=>handleUpdateBook(e)} className="form-add-post-anexos" encType="multipart/form-data">
 					<h5>Editar um novo livro</h5>
 					<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-add-post-input"/>
 					<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-add-post-input"/>
@@ -228,15 +240,17 @@ export default function AnexosManager(){
 						<p >{description.length}/{maxLength}</p>
 					</div>
 					<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-add-post-input"/>
-					<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png"/>
-					<p style={{fontSize: "12px"}}>Obs: A capa deve ter no máximo 1MB (jpeg, png, jpg)</p>
-					<button type="submit" className="btn btn-success add-post-btn">Editar</button>
-					<p className="error-message" style={{display: isAnerrorMessage ? "block" : "none"}}>{res}</p>
+					<div>
+						<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+							<p>Capa do livro</p>
+							<FaImage/>
+						</label>
+						<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+					</div>
+					<Button isLoading={isLoading} value="Editar"/>
+					<p className="error-message" style={{display: isAnErrorMessage ? "block" : "none"}}>{resMsg}</p>
 				</form>
 			</Modal>
-			{/* <Msg isOpen={showMsg} setIsOpen={()=>{setShowMsg(!showMsg)}}>
-				<h4>{res}</h4>
-			</Msg> */}
         </section>
     )
 }

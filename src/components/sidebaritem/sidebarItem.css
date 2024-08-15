@@ -4,6 +4,7 @@
     align-items: center;
     padding: 15px 10px;
     border-bottom: 1px solid rgba(192, 192, 192, 0.364);
+    text-decoration: none;
 }
 
 #sidebarIconContainer{
@@ -19,9 +20,4 @@
     transition: .8s;
     margin: 0;
     width: 80%;
-}
-
-.sidebarLink{
-    text-decoration: none;
-    color: black;
 }

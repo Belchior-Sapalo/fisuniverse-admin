@@ -5,10 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from './pages/home/home';
 import './index.css';
-import OnePost from './pages/post/OnePost';
+import PostAndComments from './pages/postAndComments/postAndComments';
 import RecoverPass from './pages/recoverPass/recoverPass';
-import Anexos from './pages/Anexos/anexos';
-import PostsManager from './pages/Posts/postsManager';
+import BooksManager from './pages/booksManager/booksManager';
+import PostsManager from './pages/postManager/postsManager';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,10 +17,10 @@ root.render(
       <Routes>
         <Route element={<App/>}>
           <Route path="/" element={<Home/>}/>
-          <Route path="/painel-adm/posts" element={<PostsManager/>}/>
-          <Route path="/painel-adm/anexos" element={<Anexos/>}/>
-          <Route path="/post" element={<OnePost/>}/>
-          <Route path="/recover-pass" element={<RecoverPass/>}/>
+          <Route path="/admin/posts" element={<PostsManager/>}/>
+          <Route path="/admin/books" element={<BooksManager/>}/>
+          <Route path="/post/comments" element={<PostAndComments/>}/>
+          <Route path="/admin/auth/recover" element={<RecoverPass/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

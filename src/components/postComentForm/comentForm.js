@@ -5,14 +5,17 @@ import {useNavigate} from 'react-router-dom'
 export default function ComentForm({postId}){
 	const [email, setEmail] = useState('')
 	const [coment, setComent] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
 	const navigate = useNavigate()
+	const API_URL = "http://localhost:8000"
 
-    function comentar(e){
+    function hanldeCreateComment(e){
+		setIsLoading(true)
 		e.preventDefault()
-		const URL = `http://localhost:8000/criarComent/${postId}`
+		const URL = `${API_URL}/post/comments/create/${postId}`
 
 		const dados = {
-			'autorEmail': email,
+			'email': email,
 			'content': coment
 		}
 		fetch(URL, {
@@ -21,15 +24,21 @@ export default function ComentForm({postId}){
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(dados)
+		}).then(res => res.json()).then(json => {
+			if(json.status == 201){
+				window.location.reload()
+				setIsLoading(false)
+			}else{
+				alert(json.msg)
+			}
 		})
-		window.location.reload()
 
 	}
     return(
-        <form id="coment-form" onSubmit={(e)=>comentar(e)}>
+        <form id="coment-form" onSubmit={(e)=>hanldeCreateComment(e)}>
             <input required type="email" placeholder="Email" onChange={e=>setEmail(e.target.value)} value={email} className="coment-form-input"/>
             <input required placeholder="Comentário" onChange={e=>setComent(e.target.value)} value={coment} className="coment-form-input"/>
-            <button type="submit" className="btn btn-primary" id='coment-btn'>Comentar</button>
+            <button disabled={isLoading} type="submit" className="btn btn-primary" id='coment-btn'>Comentar</button>
         </form>
     )
 }

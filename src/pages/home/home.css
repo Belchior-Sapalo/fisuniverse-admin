@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     background-color: rgb(239, 239, 239);
+    height: 100vh;
 }
 
 #login_sigin_form{
@@ -12,7 +13,22 @@
     align-items: center;
     width: 50%;
     border-radius: 8px;
-    height: 500px;
+    height: 80%;
+}
+
+#login_sigin_form input[type="file"] {
+    display: none;
+}
+
+#choise-file-btn{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 8px;
+}
+
+#choise-file-btn p{
+    margin: 0;
 }
 
 .auth-res{
@@ -25,10 +41,10 @@
 
 .adm-input{
     outline: none;
-    margin: 15px;
-    padding: 15px;
-	border-radius: 5px;
+    margin: 10px;
+    padding: 8px;
     border: none;
+	border-left: 3px solid var(--color-6);
     width: 90%;
 }
 
@@ -39,7 +55,7 @@
 
 #pass-input-container{
     outline: none;
-    margin: 15px;
+    margin: 8px;
     border: none;
     width: 90%;
     display: flex;
@@ -73,8 +89,16 @@
 #recover_pass_form{
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
     gap: 15px;
+    width: 100%;
+}
+
+#recover_pass_form input{
+    border-radius: 0;
+    border: none;
+    border-left: 2px solid var(--color-6);
 }
 
 #form-recover-header{
@@ -86,9 +110,18 @@
     outline: none;
     border: none;
     padding: 10px;
-    border-radius: 8px;
     width: 90%;
     margin: auto;
+}
+
+#question-container{
+    background-color: white;
+    padding: 10px;
+    width: 90%;
+    border-left: 2px solid var(--color-6);
+    margin: 0;
+    text-transform: capitalize;
+    min-width: fit-content;
 }
 
 @media screen and (max-width: 718px){

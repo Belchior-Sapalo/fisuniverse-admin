@@ -1,6 +1,5 @@
-import "../sidebaritem/sidebarItem.css"
-
 import React from 'react'
+import "../sidebaritem/sidebarItem.css"
 
 export default function SidebarItem({icon, title, isVisible}) {
   return (
