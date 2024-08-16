@@ -67,13 +67,11 @@ export default function PostAndComments(){
         <div className="post container">
             <Message isOpen={showMsg} isAnError={isAnError}>
 				<h5>{resMsg}</h5>
-			</Message>	
-            <div id='back-btn-container'>
+			</Message>
+            <div className="post-title-and-back-btn">
                 <button id='back-btn' onClick={()=>voltar()}><FaArrowLeft/></button>
+                <h4>{post.title}</h4>
             </div>
-            <h3 className="post-title">
-                {post.title}
-            </h3>
             <h5 className="post-autor">
                 {post.autor}
             </h5>
@@ -84,24 +82,26 @@ export default function PostAndComments(){
                 {post.content}
             </div>
             <ComentForm postId={q}/>
-            {
-                comments.length == 0? <p>Sem comentários</p>: comments.map(coment => {
-                return(
-                    <div className="coment">
-                        <div className='coment-header'>
-                            <div className='coment_info'>
-                                <p className="coment-email">{coment.email}</p>
-                                <p className="coment-data">{utilHandleFormateData(coment.createdAt)}</p>
+            <div id="comements-container">
+                {
+                    comments.length == 0? <p>Sem comentários</p>: comments.map(coment => {
+                    return(
+                        <div className="coment">
+                            <div className='coment-header'>
+                                <div className='coment_info'>
+                                    <p className="coment-email">{coment.email}</p>
+                                    <p className="coment-data">{utilHandleFormateData(coment.createdAt)}</p>
+                                </div>
+                                <DeleteButton endPoint={`admin/post/comment/delete/${coment.id}`}/>
                             </div>
-                            <DeleteButton endPoint={`admin/post/comment/delete/${coment.id}`}/>
+                            <div className='coment-content-container'>
+                                <p className="coment-content">{coment.content}</p>
+                            </div>
                         </div>
-                        <div className='coment-content-container'>
-                            <p className="coment-content">{coment.content}</p>
-                        </div>
-                    </div>
-                )
-                })
-            }
+                    )
+                    })
+                }
+            </div>
         </div>
     )
 }

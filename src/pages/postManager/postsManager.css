@@ -22,6 +22,12 @@
     
 }
 
+.anexo{
+    text-decoration: none;
+    color: red;
+    display: block;
+}
+
 .post-adm-options{
     display: flex;
     flex-direction: column;
@@ -34,6 +40,26 @@
     justify-content: center;
     align-items: center;
     padding: 5px;
+}
+
+#post-more-options{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+    justify-content: start;
+    padding: 0;
+}
+
+
+#post-more-options .ver-coments{
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.236);
+    padding: 4px;
+    min-width: fit-content;
 }
 
 .edit-post-form{

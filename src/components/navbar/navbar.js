@@ -1,12 +1,13 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { FaBars, FaEye, FaEyeSlash, FaUserCircle } from 'react-icons/fa';
-import { MdAddLink, MdError, MdLogout, MdPostAdd } from "react-icons/md";
+import { MdAddLink, MdError, MdClose, MdLogout, MdPostAdd } from "react-icons/md";
 import { NavLink, useNavigate } from 'react-router-dom';
 import Modal from "../../components/modal/modal";
 import Button from "../../components/submitButton/submitButton";
 import '../navbar/navbar.css';
 import SidebarItem from "../sidebaritem/sidebarItem";
+import Logo from '../logo/logo'
 const API_URL = "http://192.168.56.1:8000"
 
 export default function Navbar({CreatePostButton}){
@@ -121,7 +122,7 @@ export default function Navbar({CreatePostButton}){
 			window.location.replace('/')
 		}
 		return(
-			<button className="btn logout-btn" onClick={()=>handleLogoutAdmin()}><MdLogout size='20'/></button>
+			<button className="btn btn-dark" onClick={()=>handleLogoutAdmin()}>Terminar sessão</button>
 		)
 	}
 
@@ -173,10 +174,10 @@ export default function Navbar({CreatePostButton}){
 							to="/admin/posts" 
 							className="sidebar-link"
 							style={({isActive}) => ({
-								color: isActive ? "white": "#027373"
+								color: isActive ? "rgb(251, 94, 94)": "whitesmoke"
 							})}
 						>
-							<SidebarItem isVisible={visible} icon={<MdPostAdd size={25}/>} title="Publicações"/>
+							<SidebarItem title="Publicações"/>
 						</NavLink>
 
 						<NavLink 
@@ -184,30 +185,33 @@ export default function Navbar({CreatePostButton}){
 							to="/admin/books" 
 							className="sidebar-link"
 							style={({isActive}) => ({
-								color: isActive ? "white": "#027373"
+								color: isActive ? "rgb(251, 94, 94)": "whitesmoke"
 							})}
 						>
-							<SidebarItem isVisible={visible} icon={<MdAddLink size={25}/>} title="Anexos"/>
+							<SidebarItem title="Anexos"/>
 						</NavLink>
+
 					</div>
 					<div className="logo-container">
-						<FaBars id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/>
-						<h4 className="logo-link">Vic<span style={{color: "var(--color-3)"}}>Blog</span></h4>
+						{
+							visible ? 
+							<MdClose size={25} color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/> :
+							<FaBars color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/> 
+						}
+						<Logo/>
 					</div>
 					<div id="adm-actions" className="d-flex gap-2">
 						{CreatePostButton}
-						{LogoutButton()}
-						
 					</div>
 					<div id="go-to-profile-container">
-						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "50px", height: '50px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
+						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "45px", height: '45px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
 						</img>
 					</div>
 					<Modal isOpen={openProfile} setIsOpen={()=>{utilHandleCloseProfile()}}>
 						<div id="profile-container">
 							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`${API_URL}/admin/get-picture/${adminId}`}>
 							</img>
-
+							{LogoutButton()}
 							<div id="profile-more-info">
 								<h4>Nome: {adminNome}</h4>
 								<h4>Email: {adminEmail}</h4>

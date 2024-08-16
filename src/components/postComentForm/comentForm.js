@@ -38,7 +38,7 @@ export default function ComentForm({postId}){
         <form id="coment-form" onSubmit={(e)=>hanldeCreateComment(e)}>
             <input required type="email" placeholder="Email" onChange={e=>setEmail(e.target.value)} value={email} className="coment-form-input"/>
             <input required placeholder="Comentário" onChange={e=>setComent(e.target.value)} value={coment} className="coment-form-input"/>
-            <button disabled={isLoading} type="submit" className="btn btn-primary" id='coment-btn'>Comentar</button>
+            <button disabled={isLoading} type="submit" className="btn btn-dark" id='coment-btn'>Comentar</button>
         </form>
     )
 }

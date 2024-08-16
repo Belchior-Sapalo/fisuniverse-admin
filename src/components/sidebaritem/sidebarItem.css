@@ -18,6 +18,11 @@
 #sidebarItemTitle{
     font-size: 18px;
     transition: .8s;
-    margin: 0;
+    margin: 0 0 0 10px;
     width: 80%;
+    transition: .3s;
+}
+
+#sidebarItemTitle:hover{
+    color: rgb(251, 94, 94);
 }

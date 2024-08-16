@@ -1,0 +1,31 @@
+.logo-link{
+	text-decoration: none;
+	color: white;
+	font-family: var(--bold-font);
+	font-size: 20px;
+	transition: var(--general-transition);
+	position: relative;
+    padding-top: 2px;
+}
+
+.logo-link::after{
+	content: '';
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-top: 2px solid red;
+    border-right: 2px solid red;
+    top: 2px;
+	right: -6px;
+}
+
+.logo-link::before{
+	content: '';
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-bottom: 2px solid red;
+    border-left: 2px solid red;
+    bottom: 0px;
+    left: -5px;
+}

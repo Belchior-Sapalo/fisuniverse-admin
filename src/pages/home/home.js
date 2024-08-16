@@ -5,6 +5,7 @@ import { MdAttachEmail, MdError } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import Modal from "../../components/modal/modal";
 import Button from '../../components/submitButton/submitButton';
+import Logo from '../../components/logo/logo'
 import '../home/home.css';
 
 export default function Home(){
@@ -185,48 +186,46 @@ export default function Home(){
 	
 	return(
 		<section className="sec" id="login_sigin_sec">
-			<form 
-				id="login_sigin_form" 
-				onSubmit={(e)=>handleLogin(e)} 
+			<form
+				id="login_form"
+				onSubmit={(e)=>handleLogin(e)}
 				style={{display: isOpenAuthForm? "flex": "none"}}
 			>
-				<h1>Bem vindo</h1>
-				<input 
+				<input
 					required
-					type="email" 
-					placeholder="Email" 
-					onChange={(e)=>setEmail(e.target.value)} 
-					value={email} 
+					type="email"
+					placeholder="Email"
+					onChange={(e)=>setEmail(e.target.value)}
+					value={email}
 					className="adm-input"
 				/>
-
 				<div id="pass-input-container">
-					<input 
+					<input
 						required
-						type={seePass ? "text" : "password"} 
+						type={seePass ? "text" : "password"}
 						placeholder="Senha"
-						onChange={(e)=>setSenha(e.target.value)} 
-						value={senha} 
+						onChange={(e)=>setSenha(e.target.value)}
+						value={senha}
 						className="adm-input"
 						id="pass"
 					/>
 					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
 						{
-							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
+							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/>
 						}
 					</button>
 				</div>
-				
+			
 				<Button isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
 				{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
-				<p 
-					className="signin_login_option" 
+				<p
+					className="signin_login_option"
 					onClick={()=>{utilHandleChangeAuthForm()}}
 				>
 					Não tem uma conta? <span style={{color: "blue"}}>Criar conta</span>
 				</p>
-				<p 
-					className="repor_pass_link" 
+				<p
+					className="repor_pass_link"
 					onClick={()=>{setIsOpenModalChekEmail(!isOpenModalChekEmail); utilHandleClearAuthStates()}}
 				>
 					Esqueceu a palavra passe? <span style={{color: "red"}}>Recuperar conta</span>
@@ -234,11 +233,10 @@ export default function Home(){
 			</form>
 
 			<form 
-				id="login_sigin_form" 
+				id="sigin_form" 
 				onSubmit={(e)=>handleSignin(e)} 
 				style={{display: !isOpenAuthForm? "flex": "none"}}
 			>
-				<h4>Crie sua conta administrativa</h4>
 				
 				<input 
 					required
@@ -354,6 +352,6 @@ export default function Home(){
 					{wasChcked ? <p className="text-center" style={{color: "green"}}>{resMsg}</p>: <p className="text-center" style={{color: "red"}}>{resMsg}</p> }
 				</form>
 			</Modal>
-		</section>
+	</section>
 	)
 }

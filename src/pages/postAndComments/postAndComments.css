@@ -2,21 +2,44 @@
     padding-top: 70px;
 }
 
-#back-btn-container{
-    margin: 10px 0px;
-}
-
 #back-btn{
     background:none;
     border: none;
 }
 
+.post-title-and-back-btn{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.post-title-and-back-btn h4{
+    margin: 0;
+}
+
+#back-btn{
+    background:none;
+    border: none;
+    font-size: 14px;
+}
 .post{
     margin-top: 50px;
 }
 .coment{
     margin-bottom: 8px;
     padding: 5px 10px;
+}
+
+#comements-container{
+    height: 250px;
+    overflow-y: auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.189);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.189);
+}
+
+#comements-container::-webkit-scrollbar{
+    display: none;
 }
 
 .coment_info p{

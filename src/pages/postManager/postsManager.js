@@ -26,9 +26,15 @@ export default function PostsManager(){
 	const [content, setContent] = useState('')
 	const [showMsg, setShowMsg] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
+	const [isExpanded, setIsExpanded] = useState(false)
+	const maxLength = 350;
 	const location = useLocation()
 	const API_URL = "http://localhost:8000"
 	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
+
+	const toggleExpand = () => {
+		setIsExpanded(!isExpanded)
+	}
 
     useEffect(()=>{
 		handleShowMessageToUser()
@@ -60,7 +66,7 @@ export default function PostsManager(){
 			}
 			setResMsg(localStorage.getItem("lastMsg"))
 			setShowMsg(true)
-            setTimeout(()=>{setShowMsg(false)}, 3000)
+            setTimeout(()=>{setShowMsg(false); setResMsg('')}, 3000)
 			localStorage.removeItem("reloaded")
 			localStorage.removeItem('lastMsg')
 			localStorage.removeItem("isAnError")
@@ -75,15 +81,10 @@ export default function PostsManager(){
 		setIsOpen(true)
 		setPostToEdit(post.id)
 		setTitle(post.title)
+		setAnexo(post.anexo)
 		setContent(post.content)
 	}
 
-	function utilHandleClearUpdateStates(){
-		setTitle("")
-		setContent("")
-		setAnexo('')
-		setResMsg('')
-	}
 
     function handleUpdatePost(e){
 		e.preventDefault()
@@ -116,6 +117,13 @@ export default function PostsManager(){
 			}
 		})
     }
+
+	function utilHandleClearUpdateStates(){
+		setTitle("")
+		setContent("")
+		setAnexo('')
+		setResMsg('')
+	}
 
 	function utilHandleFormateData(data){
 		const createdAtFormated = formatDistanceToNow(data, { addSuffix: true, locale: ptBR });
@@ -213,15 +221,18 @@ export default function PostsManager(){
 									{utilHandleFormateData(post.createdAt)}
 								</p>
 								<div className="post-content">
-									{post.content}
+									{ isExpanded ?  post.content : `${post.content.substring(0, maxLength)}...`}
 									{
 										post.anexo ?
-										<p style={{color: "red"}}>{post.anexo}</p>:
+										<a className="anexo" href="#" target="_blank">{post.anexo}</a>:
 										<p></p>
 									}
+									
 								</div>
-								
-								<button className="btn ver-coments" onClick={()=>handleSeePostComments(post.id)}><FaMessage color="rgba(0, 0, 0, 0.5)"/></button>
+								<div id="post-more-options">
+									<button className="btn" onClick={toggleExpand}>{isExpanded ? 'Ver menos' : 'Ver mais'}</button>
+									<button className="btn ver-coments" onClick={()=>handleSeePostComments(post.id)}><FaMessage color="rgba(0, 0, 0, 0.5)"/> Comentários</button>
+								</div>
 							</div>
 						)
 					}): <h5 className="p-4">Faça sua primeira publicação!</h5>
