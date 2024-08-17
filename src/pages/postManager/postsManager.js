@@ -134,6 +134,7 @@ export default function PostsManager(){
 		const [isOpenFormCreatePost, setIsOpenFormCreatePost] = useState(false)
 		const [title, setTitle] = useState('')
 		const [content, setContent] = useState('')
+		const [anexo, setAnexo] = useState('')
 		const [isLoading, setIsLoading] = useState(false)
 	
 		function handleCreatePost(e){
@@ -169,11 +170,12 @@ export default function PostsManager(){
 	
 		return(
 			<div>
-				<button onClick={()=>setIsOpenFormCreatePost(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
+				<button onClick={()=>setIsOpenFormCreatePost(true)} className="btn create-post-btn" ><MdAdd size='20'/></button>
 				<Modal isOpen={isOpenFormCreatePost} setIsOpen={()=>setIsOpenFormCreatePost(!isOpenFormCreatePost)}>
-					<form onSubmit={(e)=>handleCreatePost(e)} className="form-add-post">
-						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do post" className="form-add-post-input"/>
-						<textarea required onChange={(e)=>setContent(e.target.value)} value={content} type="text" placeholder="Conteúdo" className="form-add-post-input"/>
+					<form onSubmit={(e)=>handleCreatePost(e)} className="form-posts-page">
+						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do post" className="form-posts-page-input"/>
+						<textarea required onChange={(e)=>setContent(e.target.value)} value={content} type="text" placeholder="Conteúdo" className="form-posts-page-input"/>
+						<input onChange={(e)=>setAnexo(e.target.value)} value={anexo} className="form-posts-page-input" type="text" placeholder="Anexo"/>
 						<Button  isLoading={isLoading} value='Publicar'/>
 					</form>
 				</Modal>
@@ -189,7 +191,7 @@ export default function PostsManager(){
 	}
 
     return(
-        <section id="admPanel-section">
+        <section id="admin-section-posts">
 			<Navbar CreatePostButton={CreatePostButton()}/>
 
             <div id="posts-container" className="container">
@@ -200,15 +202,14 @@ export default function PostsManager(){
 					havePostsInDatabase ? postList.map(post=>{
 						return(
 							<div className="post">
-								
 								<div className="post-header">
 									<h3 className="post-title">
 										{post.title}
 									</h3>
 
-									<div className="post-adm-options" style={{display: token? 'flex': 'none'}}>
+									<div className="post-admin-options" style={{display: token? 'flex': 'none'}}>
 										<div className="d-flex gap-2">
-											<button className="btn btn-dark post-adm-options-btn" onClick={()=>utilHandleGetPostIdToEditAndLastValues(post)}><FaEdit/></button>
+											<button className="btn btn-dark post-admin-options-btn" onClick={()=>utilHandleGetPostIdToEditAndLastValues(post)}><FaEdit/></button>
 											{<DeleteButton endPoint={`admin/post/delete/${post.id}`}/>}
 										</div>
 									</div>
@@ -239,10 +240,10 @@ export default function PostsManager(){
 				}
 			</div>
         <Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
-            <form className="edit-post-form" onSubmit={(e)=>handleUpdatePost(e)}>
-				<input onChange={(e)=>setTitle(e.target.value)} value={title} className="edit-post-form-input" type="text" placeholder="Título"/>
-				<textarea onChange={(e)=>setContent(e.target.value)} value={content} className="edit-post-form-input" type="text" placeholder="Publicação"/>
-				<input onChange={(e)=>setAnexo(e.target.value)} value={anexo} className="edit-post-form-input" type="text" placeholder="Anexo"/>
+            <form className="form-posts-page" onSubmit={(e)=>handleUpdatePost(e)}>
+				<input onChange={(e)=>setTitle(e.target.value)} value={title} className="form-posts-page-input" type="text" placeholder="Título"/>
+				<textarea onChange={(e)=>setContent(e.target.value)} value={content} className="form-posts-page-input" type="text" placeholder="Publicação"/>
+				<input onChange={(e)=>setAnexo(e.target.value)} value={anexo} className="form-posts-page-input" type="text" placeholder="Anexo"/>
 				<Button isLoading={isLoading} value="Editar"/>
             </form>
 			{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}

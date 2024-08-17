@@ -1,68 +1,29 @@
-#admPanel-section-anexos{
+#admin-section-books{
     padding: 70px 0;
     display: flex;
     justify-content: center;
     min-height: 100vh;
 }
 
-#posts-container{
-    padding: 0 30px;
-}
-
-.post{
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.026);
-    border-radius: 8px;
-}
-
-.post-header{
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 20px 8px 0px;
-    align-items: center;
-}
-
-.post-title{
-    
-}
-
-.post-adm-options{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-.adm-options-btn{
+/* create book btn */
+.create-book-btn{
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.064);
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 5px;
+    transition: var(--general-transition);
+    color: white;
 }
 
-.edit-post-form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+.create-book-btn:hover{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgba(0, 0, 0, 0.064);
 }
+/* create book btn */
 
-.edit-post-form > textarea{
-    height: 140px;
-    resize: none;
-}
-
-.edit-post-form-input, .form-add-post-input{
-    outline: none;
-    padding: 10px;
-    width: 100%;
-    border: none;
-    border: none;
-    border-radius: 5px;
-}
-
-.form-add-post-anexos{
+.form-books-page{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -72,13 +33,37 @@
     width: 100%;
 }
 
-.form-add-post-anexos > textarea{
+.form-books-page > textarea{
     height: 140px;
     resize: none;
 }
 
-.form-add-post-anexos input[type="file"]{
+.form-books-page > textarea::-webkit-scrollbar{
     display: none;
+}
+
+.form-books-page input[type="file"]{
+    display: none;
+}
+
+
+.form-books-page-input{
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+#books-container{
+    padding: 0 30px;
+}
+
+.admin-options-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
 }
 
 #choise-file-btn{
@@ -91,6 +76,14 @@
  #choise-file-btn p{
 	 margin: 0;
  }
+
+#submit-btn-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 
 .charCounter{
     width: 100%;
@@ -105,58 +98,27 @@
     opacity: .5;
 }
 
-.add-post-btn{
-    width: 100%;
-}
-
-.adm-options-btn{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4px;
-}
-
-.dooPost-btn, .logout-btn{
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.064);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    transition: var(--general-transition);
-}
-
-.dooPost-btn:hover, .logout-btn:hover{
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgba(0, 0, 0, 0.064);
-}
-
-#delete-post-question-container{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
 .error-message{
     color: red;
     text-align: center;
 }
 
 @media (max-width: 575.98px){
-  
+    
+.form-books-page{
+    width: 90%;
+}
 }
 
 @media (max-width: 767.98px){
-    .adm-options-btn{
+    .admin-options-btn{
         padding: 2px 5px;
         font-size: 13px;
     }
 }
 
 @media (max-width: 991.98px){
-    #posts-container{
+    #books-container{
         padding: 0 8px;
     }
 
@@ -165,10 +127,6 @@
     }
 
     .error-message{
-        font-size: 12px;
+        font-size: 14px;
     }
-}
-
-@media (max-width: 1199.98px){
-  
 }

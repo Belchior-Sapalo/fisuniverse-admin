@@ -34,6 +34,10 @@ html::-webkit-scrollbar{
   display: none;
 }
 
+body.modal-open{
+  overflow: hidden;
+}
+
 @media (max-width: 575.98px){
   
 }

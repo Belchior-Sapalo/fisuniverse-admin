@@ -23,9 +23,15 @@ export default function Home(){
 	const [recoverQuestion, setRecoverQuestion] = useState("")
 	const [recoverAnswer, setRecoverAnswer] = useState("")
 	const [wasChcked, setWasChcked] = useState(false)
+	const [authOption, setAuthOption] = useState('Sign Up')
 	const API_URL = "http://localhost:8000"
 
 	function utilHandleChangeAuthForm(){
+		if(isOpenAuthForm){
+			setAuthOption('Login')
+		}else{
+			setAuthOption('Sign Up')
+		}
 		utilHandleClearAuthStates()
 		setIsOpenAuthForm(!isOpenAuthForm); 
 		setIsLoading(false)
@@ -183,136 +189,134 @@ export default function Home(){
 		})
 	}
 
+	function Header(){
+		return(
+			<nav id="home-header">
+				<div id="logo-container">
+					<Logo/>
+				</div>
+				<ul id="links-list">
+					<li onClick={()=>{utilHandleChangeAuthForm()}}>
+						{authOption}
+					</li>
+				</ul>
+			</nav>
+		)
+	}
 	
 	return(
 		<section className="sec" id="login_sigin_sec">
-			<form
-				id="login_form"
-				onSubmit={(e)=>handleLogin(e)}
-				style={{display: isOpenAuthForm? "flex": "none"}}
-			>
-				<input
-					required
-					type="email"
-					placeholder="Email"
-					onChange={(e)=>setEmail(e.target.value)}
-					value={email}
-					className="adm-input"
-				/>
-				<div id="pass-input-container">
+			<Header/>
+				<form
+					id="login_form"
+					onSubmit={(e)=>handleLogin(e)}
+					style={{display: isOpenAuthForm? "flex": "none"}}
+				>
 					<input
 						required
-						type={seePass ? "text" : "password"}
-						placeholder="Senha"
-						onChange={(e)=>setSenha(e.target.value)}
-						value={senha}
+						type="email"
+						placeholder="Email"
+						onChange={(e)=>setEmail(e.target.value)}
+						value={email}
 						className="adm-input"
-						id="pass"
 					/>
-					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
-						{
-							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/>
-						}
-					</button>
-				</div>
-			
-				<Button isLoading={isLoading} setIsLoading={()=>setIsLoading(!isLoading)} value="Iniciar sessão"/>
-				{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
-				<p
-					className="signin_login_option"
-					onClick={()=>{utilHandleChangeAuthForm()}}
-				>
-					Não tem uma conta? <span style={{color: "blue"}}>Criar conta</span>
-				</p>
-				<p
-					className="repor_pass_link"
-					onClick={()=>{setIsOpenModalChekEmail(!isOpenModalChekEmail); utilHandleClearAuthStates()}}
-				>
-					Esqueceu a palavra passe? <span style={{color: "red"}}>Recuperar conta</span>
-				</p>
-			</form>
-
-			<form 
-				id="sigin_form" 
-				onSubmit={(e)=>handleSignin(e)} 
-				style={{display: !isOpenAuthForm? "flex": "none"}}
-			>
+					<div id="pass-input-container">
+						<input
+							required
+							type={seePass ? "text" : "password"}
+							placeholder="Senha"
+							onChange={(e)=>setSenha(e.target.value)}
+							value={senha}
+							className="adm-input"
+							id="pass"
+						/>
+						<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
+							{
+								seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/>
+							}
+						</button>
+					</div>
 				
-				<input 
-					required
-					type="text" 
-					placeholder="Nome" 
-					onChange={(e)=>setNome(e.target.value)} 
-					value={nome} 
-					className="adm-input"
-				/>
-
-				<input 
-					required
-					type="email" 
-					placeholder="Email" 
-					onChange={(e)=>setEmail(e.target.value)} 
-					value={email} 
-					className="adm-input"
-				/>
-
-				<div id="pass-input-container">
-					<input 
+					<Button isLoading={isLoading} isBlue={true}  value="Login"/>
+					{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
+					<p
+						className="repor_pass_link"
+						onClick={()=>{setIsOpenModalChekEmail(!isOpenModalChekEmail); utilHandleClearAuthStates()}}
+					>
+						Esqueceu a senha? <span style={{color: "rgb(251, 94, 94)"}}>Recuperar conta</span>
+					</p>
+				</form>
+				<form
+					id="sigin_form"
+					onSubmit={(e)=>handleSignin(e)}
+					style={{display: !isOpenAuthForm? "flex": "none"}}
+				>
+				
+					<input
 						required
-						type={seePass ? "text" : "password"} 
-						placeholder="Senha"
-						onChange={(e)=>setSenha(e.target.value)} 
-						value={senha} 
+						type="text"
+						placeholder="Nome"
+						onChange={(e)=>setNome(e.target.value)}
+						value={nome}
 						className="adm-input"
-						id="pass"
 					/>
-					<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
-						{
-							seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/> 
-						}
-					</button>
-				</div>
-
-				<input 
-					required
-					type="text" 
-					placeholder="Pergunta de recuperação de conta" 
-					onChange={(e)=>setRecoverQuestion(e.target.value)} 
-					value={recoverQuestion} 
-					className="adm-input"
-				/>
-
-				<input 
-					required
-					type="text" 
-					placeholder="Resposta (a resposta é usada para recuperar a conta!)" 
-					onChange={(e)=>setRecoverAnswer(e.target.value)} 
-					value={recoverAnswer} 
-					className="adm-input"
-				/>
-
-				<div>
-					<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
-						<p>Foto de perfil</p>
-						<FaUserCircle/>
-					</label>
-					<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
-				</div>
-
-				<Button isLoading={isLoading} value="Criar conta"/>
-				{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
-				<p 
-					className="signin_login_option"  
-					onClick={()=>{utilHandleChangeAuthForm()}}
-						
-					>Já tem uma conta? <span style={{color: "blue"}}>Iniciar sessão</span>
-				</p>
-			</form>
+					<input
+						required
+						type="email"
+						placeholder="Email"
+						onChange={(e)=>setEmail(e.target.value)}
+						value={email}
+						className="adm-input"
+					/>
+					<div id="pass-input-container">
+						<input
+							required
+							type={seePass ? "text" : "password"}
+							placeholder="Senha"
+							onChange={(e)=>setSenha(e.target.value)}
+							value={senha}
+							className="adm-input"
+							id="pass"
+						/>
+						<button type="button" onClick={() => setSeePass(prev => !prev)} className="btn">
+							{
+								seePass ? <FaEyeSlash id="see-pass-icon"/>: <FaEye id="see-pass-icon"/>
+							}
+						</button>
+					</div>
+					<input
+						required
+						type="text"
+						placeholder="Pergunta de recuperação de conta"
+						onChange={(e)=>setRecoverQuestion(e.target.value)}
+						value={recoverQuestion}
+						className="adm-input"
+					/>
+					<input
+						required
+						type="text"
+						placeholder="Resposta (a resposta é usada para recuperar a conta!)"
+						onChange={(e)=>setRecoverAnswer(e.target.value)}
+						value={recoverAnswer}
+						className="adm-input"
+					/>
+					<div id="submit-btn-container">
+						<div>
+							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+								<p>Foto de perfil</p>
+								<FaUserCircle/>
+							</label>
+							<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+						</div>
+						<Button isLoading={isLoading} isBlue={true} value="Sign Up"/>
+					</div>
+					{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
+				</form>
 
 			<Modal isOpen={isOpenModalChekEmail} setIsOpen={() => utilHandleCloseModal()}>
 				<form id="recover_pass_form" onSubmit={(e)=>handleVerifyEmail(e)}>
 					<div id="form-recover-header">
-						<h4>Repor palavra passe <span><MdAttachEmail/></span></h4>
+						<h4>Verificar email<span><MdAttachEmail/></span></h4>
 					</div>
 					<input 
 						placeholder="Insira seu email" 
@@ -324,7 +328,7 @@ export default function Home(){
 						autoFocus
 					/>
 
-					<Button isLoading={isLoadingEmailCheck} value="Verificar email"/>
+					<Button isLoading={isLoadingEmailCheck} value="Verificar"/>
 
 					{wasChcked? <p className="text-center" style={{color: "green"}}>{resMsg}</p>: <p className="text-center" style={{color: "red"}}>{resMsg}</p> }
 				</form>

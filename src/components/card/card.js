@@ -38,7 +38,7 @@ export default function Card({title, autor, ano, editora, description, id, EdBtn
 
     const deleteBookBtn = () => {
 		return(
-			<button disabled={isDeleting} onClick={() => handlerDeleteBook()} className="btn btn-danger adm-options-btn">{moreOptionsMsg}</button>
+			<button disabled={isDeleting} onClick={() => handlerDeleteBook()} className="btn btn-danger admin-options-btn">{moreOptionsMsg}</button>
 		)
 	}
 

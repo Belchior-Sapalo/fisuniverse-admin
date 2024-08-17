@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import DeleteButton from '../../components/deleteButton/deleteButton'
 import Message from '../../components/message/message'
 import ComentForm from '../../components/postComentForm/comentForm'
+import Logo from '../../components/logo/logo'
 import './postAndComments.css'
 
 export default function PostAndComments(){
@@ -63,15 +64,24 @@ export default function PostAndComments(){
 		}
 	}
 
+    function Header(){
+		return(
+			<nav id="header">
+                <button id='back-btn' onClick={()=>voltar()}><FaArrowLeft/></button>
+				<div id="logo-container">
+					<Logo/>
+				</div>
+			</nav>
+		)
+	}
+
     return(
-        <div className="post container">
+        <div className="OnePost container">
+            <Header/>
             <Message isOpen={showMsg} isAnError={isAnError}>
 				<h5>{resMsg}</h5>
 			</Message>
-            <div className="post-title-and-back-btn">
-                <button id='back-btn' onClick={()=>voltar()}><FaArrowLeft/></button>
-                <h4>{post.title}</h4>
-            </div>
+            <h4>{post.title}</h4>
             <h5 className="post-autor">
                 {post.autor}
             </h5>

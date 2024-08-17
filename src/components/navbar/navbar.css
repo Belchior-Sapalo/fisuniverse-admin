@@ -3,65 +3,18 @@
 
 #nav-bar{
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
 	position: fixed;
 	width: 100%;
 	top: 0;
 	left: 0;
-	padding: 0 5% 0 1.8%;
 	height: 60px;
 	background-color: black;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.045);
 }
 
-#go-to-profile-container{
-	background-color: white;
-	border-radius: 50%;
-}
-
-#go-to-profile{
-	border-radius: 50%;
-	border: 1px solid rgba(52, 52, 52, 0.262);
-	cursor: pointer;
-}
-
-#profile-container{
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	align-items: center;
-}
-
-#profile-photo{
-	width: 300px;
-}
-
-#profile-more-info{
-	margin: 10px 0;
-}
-
-#profile-more-info h4{
-	font-size: 16px;
-	margin-bottom: 10px;
-}
-
-.logo-container{
-	padding: 10px 0px;
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 30px;
-}
-
-#toggleSidebarBtn{
-	font-size: 20px;
-	cursor: pointer;
-	color: white;
-}
-
-
+/* sidebar */
 #sidebar-visible{
 	background-color: black;
 	height: 100vh;
@@ -88,43 +41,60 @@
 	color: white;
 }
 
-.nav-list{
+#toggleSidebarBtn{
+	font-size: 20px;
+	cursor: pointer;
+	color: white;
+}
+/* sidebar */
+
+.logo-container-and-btn-toggle{
+	padding: 10px 0px;
+	text-align: center;
 	display: flex;
-	gap: 20px;
+	justify-content: center;
 	align-items: center;
-	margin: 0;
-	padding: 0px;
+	gap: 30px;
 }
 
-#nav-content-container{
+#toggle-sidebar-container{
+	height: 40px;
+	width: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.nav-bar-link{
-	text-decoration: none;
-	font-size: 18px;
-	color: var(--color-1);
-	transition: var(--general-transition);
+#go-to-profile-container{
+	background-color: white;
+	border-radius: 50%;
 }
 
-.add-post-btn{
-    width: 100%;
+#go-to-profile-btn{
+	border-radius: 50%;
+	border: 1px solid rgba(52, 52, 52, 0.262);
+	cursor: pointer;
 }
 
-.dooPost-btn{
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.064);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    transition: var(--general-transition);
+#profile-container{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
 }
 
-.dooPost-btn:hover{
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgba(0, 0, 0, 0.064);
+#profile-photo{
+	width: 300px;
 }
 
+#profile-more-info{
+	margin: 10px 0;
+}
+
+#profile-more-info h4{
+	font-size: 16px;
+	margin-bottom: 10px;
+}
 
 #update-profile-form{
 	display: flex;
@@ -140,7 +110,6 @@
     padding: 15px;
 	margin: 10px;
     border: none;
-	border-left: 2px solid var(--color-6);
 	width: 90%;
 }
 
@@ -158,6 +127,13 @@
  #choise-file-btn p{
 	 margin: 0;
  }
+
+ #update-profile-form #submit-btn-container{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 .pass-input-container{
 	margin: 10px;
@@ -197,71 +173,11 @@
 @media screen and (max-width: 900px){
 	#nav-bar{
 		padding: 0 5%;
-	}
-
-	#nav-content-container{
-		
+		justify-content: space-between;
 	}
 
 	#sidebar-visible{
 		width: 100%;
-	}
-
-	.nav-list{
-		flex-direction: column;
-		position: absolute;
-		background-color: var(--color-1);
-		top: 100%;
-		left: 0%;
-		height: 100vh;
-		width: 100%;
-		transition: var(--general-transition);
-		padding: 0;
-		gap: 5px;
-	}
-
-	#nav-list-visible{
-		flex-direction: column;
-		position: absolute;
-		left: 0%;
-		top: 0%;
-		align-items: center;
-	}
-
-	#nav-list-disable{
-		flex-direction: column;
-		position: absolute;
-		left: 100%;
-		top: 0%;
-	}
-
-	.nav-list-item{
-		display: flex;
-		align-items: center;
-		width: 100%;
-	}
-
-	.nav-bar-link{
-		color: white;
-		width: 100%;
-		display: flex;
-		padding: 8px 20px;
-		justify-content: flex-start;
-		transition: var(--general-transition);
-	}
-
-	#search-form-input{
-		background-color: whitesmoke;
-		border-color: var(--color-1);
-	}
-	#search-btn{
-		background-color: var(--color-6);
-		color: var(--color-1);
-		border: 0;
-		height: 45px;
-	}
-	#search-btn:hover{
-		color: white;
 	}
 }
 

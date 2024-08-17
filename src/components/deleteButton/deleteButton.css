@@ -1,0 +1,13 @@
+.admin-options-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
+@media (max-width: 767.98px){
+    .admin-options-btn{
+        padding: 2px 5px;
+        font-size: 13px;
+    }
+}

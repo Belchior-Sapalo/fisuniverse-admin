@@ -2,6 +2,7 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import { MdDelete, MdError } from "react-icons/md";
 import Cookies from "js-cookie";
+import './deleteButton.css'
 
 export default function DeleteBtn({endPoint}) {
     const [wasClikedAlready, setWasClikedAlready] = useState(false)
@@ -43,6 +44,6 @@ export default function DeleteBtn({endPoint}) {
 		document.location.reload()
 	}
     return(
-        <button disabled={isDeleting} className="btn btn-danger post-adm-options-btn" onClick={()=>{handlerDeletePost()}}>{wasClikedAlready ? <MdError color="orange"/> : <MdDelete/>}</button>
+        <button disabled={isDeleting} className="btn btn-danger admin-options-btn" onClick={()=>{handlerDeletePost()}}>{wasClikedAlready ? <MdError color="orange"/> : <MdDelete/>}</button>
     )
 }

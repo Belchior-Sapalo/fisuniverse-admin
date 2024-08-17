@@ -1,12 +1,10 @@
 .submit-btn{
-    height: 50px;
-    margin: 8px auto;
     color: white;
-    font-family: var(--bold-font);
-	width: 90%;
+	width: 100px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    margin: 10px 0px;
 }
 
 .value{

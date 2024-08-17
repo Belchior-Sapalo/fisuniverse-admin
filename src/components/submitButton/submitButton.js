@@ -1,14 +1,15 @@
 import "./submitButton.css"
 import Loader from "../loader/loader"
- function Button({isLoading, value}){
+ function Button({isLoading, value, isBlue}){
     return(
         <button 
             disabled={isLoading} 
-            className="btn btn-dark submit-btn"  
-            style={{justifyContent: isLoading? "space-between": 'center'}}
+            className={isBlue ? 'btn btn-primary submit-btn' : 'btn btn-dark submit-btn'}  
         >
-            <Loader isLoading={isLoading}/>
-            <p className="value">{value}</p>
+            { 
+                isLoading ? <Loader isLoading={isLoading} isBlue={isBlue}/> :
+                <p className="value">{value}</p>
+            }
         </button>
     )
 }

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../../components/submitButton/submitButton'
 import './recoverPass.css'
+import Logo from '../../components/logo/logo'
+import { FaArrowLeft } from 'react-icons/fa'
 
 export default function RecoverPass(){
     const [searchParams] = useSearchParams()
@@ -17,6 +19,10 @@ export default function RecoverPass(){
     const [wasRecovered, setWasRecovered] = useState(false)
 	const API_URL = "http://localhost:8000"
     
+    function voltar(){
+        window.location.replace('/')
+    }
+
     useEffect(()=>{
         setEmail(searchParams.get('q'))
     }, [])
@@ -50,8 +56,21 @@ export default function RecoverPass(){
 
         })
     }
+
+    function Header(){
+		return(
+			<nav id="home-header">
+                <button id='back-btn' onClick={()=>voltar()}><FaArrowLeft/></button>
+				<div id="logo-container">
+					<Logo/>
+				</div>
+			</nav>
+		)
+	}
+
     return(
         <section id='recover-pass-sec'>
+            <Header/>
             <form onSubmit={(e)=>handlerRecoverPass(e)} id='recover-pass-form'>
                 <input 
                     placeholder='Email'
@@ -59,6 +78,7 @@ export default function RecoverPass(){
                     type='email'
                     onChange={(e)=>setEmail(e.target.value)}
                     value={email}
+					className="adm-input"
                     autoFocus
                 />
                 <div id="pass-input-container">
@@ -94,7 +114,7 @@ export default function RecoverPass(){
                     </button>
 				</div>
 
-                <Button isLoading={isLoading} value="Redefinir senha"/>
+                <Button isLoading={isLoading} value="Redefinir" isBlue={true}/>
                 
                 {
                     wasRecovered ? 

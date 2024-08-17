@@ -1,10 +1,28 @@
-#ver-post-section{
-    padding-top: 70px;
+.OnePost{
+    margin-top: 80px;
+}
+
+.OnePost #header{
+    width: 100%;
+    position: fixed;
+    display: flex;
+    top: 0;
+	left: 0;
+    height: 60px;
+    justify-content: space-between;
+    padding: 0px 150px;
+    align-items: center;
+    background-color: black;
+}
+
+#logo-container{
+
 }
 
 #back-btn{
     background:none;
     border: none;
+    color: white;
 }
 
 .post-title-and-back-btn{
@@ -22,9 +40,6 @@
     background:none;
     border: none;
     font-size: 14px;
-}
-.post{
-    margin-top: 50px;
 }
 .coment{
     margin-bottom: 8px;
@@ -78,4 +93,10 @@
 
 .coment-content-container{
     
+}
+
+@media (max-width: 575.98px){
+    .OnePost #header{
+        padding: 0px 50px;
+    }
 }

@@ -1,14 +1,65 @@
-#admPanel-section{
+#admin-section-posts{
     min-height: 100vh;
     overflow-x: hidden;
     padding-top: 60px;
 }
 
-.post{
+/* create post */
+.create-post-btn{
+    border-radius: 50%;
+    background-color: var(--color-6);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    transition: var(--general-transition);
+}
+
+.create-post-btn:hover{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid var(--color-6);
+    color: var(--color-6);
+}
+/* create post */
+
+.form-posts-page{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 5px;
+    width: 100%;
+}
+
+.form-posts-page > textarea{
+    height: 250px;
+    resize: none;
+}
+
+.form-posts-page-input{
+    border-radius: 0;
+    border: none;
+    outline: none;
     padding: 10px;
-    margin-bottom: 20px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.form-posts-page-input::-webkit-scrollbar{
+    display: none;
+}
+
+.post{
+    margin: 10px;
+    padding: 10px;
     border: 1px solid rgba(0, 0, 0, 0.026);
     border-radius: 8px;
+}
+
+.post:last-child{
+    margin-bottom: 50px;
 }
 
 .post-header{
@@ -18,24 +69,21 @@
     align-items: center;
 }
 
-.post-title{
-    
-}
-
 .anexo{
     text-decoration: none;
     color: red;
     display: block;
 }
 
-.post-adm-options{
+.post-admin-options{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 5px;
 }
-.post-adm-options-btn{
+
+.post-admin-options-btn{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +99,6 @@
     padding: 0;
 }
 
-
 #post-more-options .ver-coments{
     border: none;
     display: flex;
@@ -62,84 +109,8 @@
     min-width: fit-content;
 }
 
-.edit-post-form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    width: 100%;
-}
-
-.edit-post-form > textarea{
-    height: 350px;
-    resize: none;
-}
-
-.edit-post-form >::-webkit-scrollbar{
-    display: none;
-}
-
-.edit-post-form-input, .form-add-post-input{
-    outline: none;
-    padding: 10px;
-    width: 100%;
-    border: none;
-    border: none;
-    border-radius: 5px;
-}
-
-.form-add-post{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 5px;
-    width: 100%;
-}
-
-.form-add-post > textarea{
-    height: 250px;
-}
-
-.form-add-post-input{
-    border-radius: 0;
-    border: none;
-    border-left: 2px solid var(--color-6);
-}
-
-.edit-post-form-input{
-    border-radius: 0;
-    border: none;
-    border-left: 2px solid var(--color-6);
-}
-
-.add-post-btn{
-    width: 100%;
-}
-
-.dooPost-btn, .logout-btn{
-    border-radius: 50%;
-    background-color: var(--color-6);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    transition: var(--general-transition);
-}
-
-.dooPost-btn:hover, .logout-btn:hover{
-    background-color: rgb(255, 255, 255);
-    border: 1px solid var(--color-6);
-    color: var(--color-6);
-}
-
-@media (max-width: 991.98px){
-    #admPanel-section{
-        
-    }
-    .post-adm-options-btn{
-        padding: 2px;
+@media (max-width: 575.98px){
+    .form-posts-page{
+        width: 90%;
     }
 }

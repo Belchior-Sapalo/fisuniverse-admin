@@ -108,7 +108,7 @@ export default function BooksManager(){
 
 	const UpdateBookButton = (book) => {
 		return(
-			<button onClick={()=>utilHandleGetIdBookToEditAndLastValues(book)} className="btn btn-primary adm-options-btn">Editar</button>
+			<button onClick={()=>utilHandleGetIdBookToEditAndLastValues(book)} className="btn btn-primary admin-options-btn">Editar</button>
 		)
 	}
 	
@@ -169,27 +169,29 @@ export default function BooksManager(){
 		
 		return(
 			<div>
-				<button onClick={()=>setIsOpenFormCreate(true)} className="btn dooPost-btn" ><MdAdd size='20'/></button>
+				<button onClick={()=>setIsOpenFormCreate(true)} className="btn create-book-btn" ><MdAdd size='20'/></button>
 				<Modal isOpen={isOpenFormCreate} setIsOpen={()=>{setIsOpenFormCreate(!isOpenFormCreate); utilHandleClearStates()}}>
-					<form onSubmit={(e)=>handleCreateBook(e)} className="form-add-post-anexos" encType="multipart/form-data">
+					<form onSubmit={(e)=>handleCreateBook(e)} className="form-books-page" encType="multipart/form-data">
             			<h5>Poste um novo livro</h5>
-						<input onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor(opcional)" className="form-add-post-input"/>
-						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-add-post-input"/>
-						<input required onChange={(e)=>setYear(e.target.value)} value={year} type="text" placeholder="Ano de publicação" className="form-add-post-input"/>
-						<input required onChange={(e)=>setEditora(e.target.value)} value={editora} type="text" placeholder="Editora" className="form-add-post-input"/>
-						<textarea maxLength={maxLength} required onChange={(e)=>setDescription(e.target.value)} value={description} type="text" placeholder={`Descrição (digite até ${maxLength} caracteres)` }className="form-add-post-input"/>
+						<input onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor(opcional)" className="form-books-page-input"/>
+						<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-books-page-input"/>
+						<input required onChange={(e)=>setYear(e.target.value)} value={year} type="text" placeholder="Ano de publicação" className="form-books-page-input"/>
+						<input required onChange={(e)=>setEditora(e.target.value)} value={editora} type="text" placeholder="Editora" className="form-books-page-input"/>
+						<textarea maxLength={maxLength} required onChange={(e)=>setDescription(e.target.value)} value={description} type="text" placeholder={`Descrição (digite até ${maxLength} caracteres)` }className="form-books-page-input"/>
 						<div className="charCounter">
 							<p >{description.length}/{maxLength}</p>
 						</div>
-						<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-add-post-input"/>
-						<div>
-							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
-								<p>Capa do livro</p>
-								<FaImage/>
-							</label>
-							<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+						<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-books-page-input"/>
+						<div id="submit-btn-container">
+							<div>
+								<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+									<p>Capa do livro</p>
+									<FaImage/>
+								</label>
+								<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+							</div>
+							<Button isLoading={isLoading} value="Publicar"/>
 						</div>
-						<Button isLoading={isLoading} value="Publicar"/>
 						<p className="error-message" style={{display: isAnErrorMessage ? "block" : "none"}}>{resMsg}</p>
 					</form>
 				</Modal>
@@ -214,12 +216,12 @@ export default function BooksManager(){
 	}
 
     return(
-        <section id="admPanel-section-anexos">
+        <section id="admin-section-books">
             <Navbar CreatePostButton={CreateBookButton()}/>
-            <div id="posts-container" className="container-fluid">
-			<Message isOpen={showMsg} isAnError={isAnError}>
-				<h5>{resMsg}</h5>
-			</Message>	
+            <div id="books-container" className="container-fluid">
+				<Message isOpen={showMsg} isAnError={isAnError}>
+					<h5>{resMsg}</h5>
+				</Message>	
 				{
 					havebooksInDatabase ? booksList.map(book => {
 						return(
@@ -229,26 +231,28 @@ export default function BooksManager(){
 				}
 			</div>
 			<Modal isOpen={isOpenFormCreate} setIsOpen={()=>{setIsOpenFormCreate(!isOpenFormCreate); utilHandleClearStates()}}>
-				<form onSubmit={(e)=>handleUpdateBook(e)} className="form-add-post-anexos" encType="multipart/form-data">
-					<h5>Editar um novo livro</h5>
-					<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-add-post-input"/>
-					<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-add-post-input"/>
-					<input required onChange={(e)=>setYear(e.target.value)} value={year} type="text" placeholder="Ano de publicação" className="form-add-post-input"/>
-					<input required onChange={(e)=>setEditora(e.target.value)} value={editora} type="text" placeholder="Editora" className="form-add-post-input"/>
-					<textarea maxLength={maxLength}  required onChange={(e)=>setDescription(e.target.value)} value={description} type="text" placeholder={`Descrição (digite até ${maxLength} caracteres)`} className="form-add-post-input"/>
+				<form onSubmit={(e)=>handleUpdateBook(e)} className="form-books-page" encType="multipart/form-data">
+					<h5>Editar livro</h5>
+					<input required onChange={(e)=>setAutor(e.target.value)} value={autor} type="text" placeholder="Nome do autor" className="form-books-page-input"/>
+					<input required onChange={(e)=>setTitle(e.target.value)} value={title} type="text" placeholder="Título do livro" className="form-books-page-input"/>
+					<input required onChange={(e)=>setYear(e.target.value)} value={year} type="text" placeholder="Ano de publicação" className="form-books-page-input"/>
+					<input required onChange={(e)=>setEditora(e.target.value)} value={editora} type="text" placeholder="Editora" className="form-books-page-input"/>
+					<textarea maxLength={maxLength}  required onChange={(e)=>setDescription(e.target.value)} value={description} type="text" placeholder={`Descrição (digite até ${maxLength} caracteres)`} className="form-books-page-input"/>
 					<div className="charCounter">
 						<p >{description.length}/{maxLength}</p>
 					</div>
-					<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-add-post-input"/>
-					<div>
-						<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
-							<p>Capa do livro</p>
-							<FaImage/>
-						</label>
-						<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+					<input required onChange={(e)=>setLink(e.target.value)} value={link} type="text" placeholder="Link para download" className="form-books-page-input"/>
+					<div id="submit-btn-container">
+						<div>
+							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+								<p>Capa do livro</p>
+								<FaImage/>
+							</label>
+							<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+						</div>
+						<Button isLoading={isLoading} value="Editar"/>
+						<p className="error-message" style={{display: isAnErrorMessage ? "block" : "none"}}>{resMsg}</p>
 					</div>
-					<Button isLoading={isLoading} value="Editar"/>
-					<p className="error-message" style={{display: isAnErrorMessage ? "block" : "none"}}>{resMsg}</p>
 				</form>
 			</Modal>
         </section>

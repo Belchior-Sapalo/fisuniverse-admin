@@ -188,23 +188,25 @@ export default function Navbar({CreatePostButton}){
 								color: isActive ? "rgb(251, 94, 94)": "whitesmoke"
 							})}
 						>
-							<SidebarItem title="Anexos"/>
+							<SidebarItem title="Livros"/>
 						</NavLink>
 
 					</div>
-					<div className="logo-container">
-						{
-							visible ? 
-							<MdClose size={25} color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/> :
-							<FaBars color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/> 
-						}
+					<div className="logo-container-and-btn-toggle">
+						<div id="toggle-sidebar-container">
+							{
+								visible ?
+								<MdClose size={25} color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/> :
+								<FaBars color="red" id="toggleSidebarBtn" onClick={()=> setVisible(prevState => !prevState)}/>
+							}
+						</div>
 						<Logo/>
 					</div>
 					<div id="adm-actions" className="d-flex gap-2">
 						{CreatePostButton}
 					</div>
 					<div id="go-to-profile-container">
-						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile" style={{width: "45px", height: '45px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
+						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile-btn" style={{width: "45px", height: '45px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
 						</img>
 					</div>
 					<Modal isOpen={openProfile} setIsOpen={()=>{utilHandleCloseProfile()}}>
@@ -283,16 +285,16 @@ export default function Navbar({CreatePostButton}){
 									}
 								</button>
 							</div>
-
-							<div>
-								<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
-									<p>Foto de perfil</p>
-									<FaUserCircle/>
-								</label>
-								<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+							<div id="submit-btn-container">
+								<div>
+									<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
+										<p>Foto de perfil</p>
+										<FaUserCircle/>
+									</label>
+									<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
+								</div>
+								<Button isLoading={isLoading} value="Atualizar"/>
 							</div>
-
-							<Button isLoading={isLoading} value="Atualizar"/>
 							{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/>{resMsg}</p>}
 						</form>
 					</Modal>
