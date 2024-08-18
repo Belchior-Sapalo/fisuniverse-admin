@@ -28,6 +28,7 @@ export default function BooksManager(){
 	const [booksList, setBooksList] = useState([])
 	const [isAnError, setIsAnError] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingBooks, setIsLoadingBooks] = useState(false)
 	const location = useLocation()
 	const navigate = useNavigate()
 	const maxLength = 250;
@@ -40,6 +41,7 @@ export default function BooksManager(){
 	}, [])
 
 	function handleGetAllBooks(){
+		setIsLoadingBooks(true)
 		const URL = `${API_URL}/books`
 		fetch(URL)
 		.then((res)=>{
@@ -53,8 +55,10 @@ export default function BooksManager(){
 			if(json.founded){
 				setBooksList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
 				setHavebooksInDatabase(true)
+				setIsLoadingBooks(false)
 			}else{
 				setHavebooksInDatabase(false)
+				setIsLoadingBooks(false)
 			}
 		}).catch(error => {
 			navigate('/error')
@@ -250,7 +254,7 @@ export default function BooksManager(){
 						return(
 							<Card title={book.title} autor={book.autor} editora={book.editora} ano={book.ano} description={book.description} id={book.id} EdBtn={UpdateBookButton(book)} token={token}/>
 						)
-					}) : <h4>Publique o seu primeiro livro!</h4> 
+					}) : isLoadingBooks ? <h4 className="p-4 text-center">Buscando livros...</h4>  : <h4 className="p-4 text-center">Publique o seu primeiro livro!</h4> 
 				}
 			</div>
 			<Modal isOpen={isOpenFormCreate} setIsOpen={()=>{setIsOpenFormCreate(!isOpenFormCreate); utilHandleClearStates()}}>

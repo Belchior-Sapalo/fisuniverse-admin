@@ -23,6 +23,7 @@ export default function PostsManager(){
 	const [title, setTitle] = useState('')
 	const [anexo, setAnexo] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingPosts, setIsLoadingPosts] = useState(false)
 	const [content, setContent] = useState('')
 	const [showMsg, setShowMsg] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
@@ -43,6 +44,7 @@ export default function PostsManager(){
 	}, [])
 
 	function handleGetAllPosts(){
+		setIsLoadingPosts(true)
 		const URL = `${API_URL}/posts`
 		fetch(URL)
 		.then((res)=>{
@@ -55,8 +57,10 @@ export default function PostsManager(){
 			if(json.founded){
 				setHavePostsInDatabase(true)
 				setPostList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+				setIsLoadingPosts(false)
 			}else{
 				setHavePostsInDatabase(false)
+				setIsLoadingPosts(false)
 			}
 		}).catch(error => {
 			navigate('/error')
@@ -206,7 +210,6 @@ export default function PostsManager(){
 		)
 	}
 
-	
 	function utilHanldeReloadWindow(isAnError){
 		localStorage.setItem('reloaded', 'true')
         localStorage.setItem('isAnError', isAnError)
@@ -259,7 +262,7 @@ export default function PostsManager(){
 								</div>
 							</div>
 						)
-					}): <h5 className="p-4">Faça sua primeira publicação!</h5>
+					}): isLoadingPosts ? <h4 className="p-4 text-center">Buscando publicação...</h4> : <h5 className="p-4 text-center">Faça sua primeira publicação!</h5>
 				}
 			</div>
         <Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
