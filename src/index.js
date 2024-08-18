@@ -9,6 +9,7 @@ import PostAndComments from './pages/postAndComments/postAndComments';
 import RecoverPass from './pages/recoverPass/recoverPass';
 import BooksManager from './pages/booksManager/booksManager';
 import PostsManager from './pages/postManager/postsManager';
+import ErrorPage from './pages/errorPage/errorPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
           <Route path="/admin/books" element={<BooksManager/>}/>
           <Route path="/post/comments" element={<PostAndComments/>}/>
           <Route path="/admin/auth/recover" element={<RecoverPass/>}/>
+          <Route path="/error" element={<ErrorPage/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

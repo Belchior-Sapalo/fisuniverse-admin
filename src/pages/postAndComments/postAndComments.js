@@ -18,6 +18,7 @@ export default function PostAndComments(){
     const [resMsg, setResMsg] = useState('')
     const [comments, setComments] = useState([])
 	const [showMsg, setShowMsg] = useState(false)
+    const [haveComments, setHaveComments] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
     const q = searchParams.get('q')
     const API_URL = "http://localhost:8000"
@@ -34,11 +35,25 @@ export default function PostAndComments(){
 
     function hanldeGetPostById(){
         const URL = `${API_URL}/post/${q}`
-        fetch(URL)
-        .then((res)=>res.json())
+        fetch(URL).then((res)=>{
+            if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+        })
         .then((json)=>{
-            setPost(json.post);
-            setComments(json.post.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+            if(json.founded){
+                setPost(json.post);
+                if(json.comments.length != 0){
+                    setComments(json.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+                    setHaveComments(true)
+                }else{
+                    setHaveComments(false)
+                }
+            }
+        }).catch(error => {
+            navigate('/error')
         })
     }
 
@@ -94,22 +109,22 @@ export default function PostAndComments(){
             <ComentForm postId={q}/>
             <div id="comements-container">
                 {
-                    comments.length == 0? <p>Sem comentários</p>: comments.map(coment => {
-                    return(
-                        <div className="coment">
-                            <div className='coment-header'>
-                                <div className='coment_info'>
-                                    <p className="coment-email">{coment.email}</p>
-                                    <p className="coment-data">{utilHandleFormateData(coment.createdAt)}</p>
+                    haveComments ? comments.map(coment => {
+                        return(
+                            <div className="coment">
+                                <div className='coment-header'>
+                                    <div className='coment_info'>
+                                        <p className="coment-email">{coment.email}</p>
+                                        <p className="coment-data">{utilHandleFormateData(coment.createdAt)}</p>
+                                    </div>
+                                    <DeleteButton endPoint={`admin/post/comment/delete/${coment.id}`}/>
                                 </div>
-                                <DeleteButton endPoint={`admin/post/comment/delete/${coment.id}`}/>
+                                <div className='coment-content-container'>
+                                    <p className="coment-content">{coment.content}</p>
+                                </div>
                             </div>
-                            <div className='coment-content-container'>
-                                <p className="coment-content">{coment.content}</p>
-                            </div>
-                        </div>
-                    )
-                    })
+                        )
+                        }): <p>Sem comentários</p>
                 }
             </div>
         </div>

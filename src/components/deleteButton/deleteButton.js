@@ -8,6 +8,7 @@ export default function DeleteBtn({endPoint}) {
     const [wasClikedAlready, setWasClikedAlready] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 	const [token, setToken] = useState('')
+    const [deleted, setDeleted] = useState(false)
 	const API_URL = "http://localhost:8000"
     
     useEffect(()=>{
@@ -23,10 +24,15 @@ export default function DeleteBtn({endPoint}) {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
-            })
-            .then((res)=>res.json())
-            .then((json)=>{
-                if(json.status == 200){
+            }).then((res)=>{
+                if(res.status == 500){
+                    throw new Error('Falha no servidor')
+                }
+
+                return res.json()
+            }).then((json)=>{
+                if(json.deleted){
+                    setDeleted(true)
                     handleReloadWindow(false)
                 }else{
                     handleReloadWindow(true)

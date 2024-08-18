@@ -69,10 +69,14 @@ export default function Home(){
 		fetch(URL, {
 			method: 'POST',
 			body: formData
-		})
-		.then((res)=>res.json())
-		.then((json)=>{
-			if(json.status == 200){
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then((json)=>{
+			if(json.created){
 				setIsLoading(false)
 				utilHandleClearAuthStates()
 				setIsOpenAuthForm(!isOpenAuthForm)
@@ -80,6 +84,8 @@ export default function Home(){
 				setResMsg(json.msg)
 				setIsLoading(false)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -98,16 +104,22 @@ export default function Home(){
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(dados)
-		})
-		.then((res)=>res.json())
-		.then((json)=>{
-			if(json.status == 200){
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then((json)=>{
+			if(json.logado){
 				utilHandleSaveAdmin(json)
 				window.location.replace('/admin/posts')
 			}else{
 				setResMsg(json.msg)
 			}
 			setIsLoading(false)
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -128,6 +140,16 @@ export default function Home(){
 		setRecoverAnswer('')
 	}
 
+	function hanldeClearForm(){
+		setEmail("")
+		setSenha("")
+		setNome("")
+		setResMsg("")
+		setRecoverQuestion('')
+		setRecoverAnswer('')
+		setSelectedFile(null)
+	}
+
 	function handleVerifyEmail(e){
 		e.preventDefault();
 		setIsLoadingEmailCheck(true)
@@ -142,8 +164,14 @@ export default function Home(){
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(dados)
-		}).then(res=> res.json()).then(json => {
-			if(json.isVerifyed){
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then(json => {
+			if(json.verifyed){
 				setIsLoadingEmailCheck(false)
 				setWasChcked(true)
 				setResMsg(json.msg)
@@ -157,6 +185,8 @@ export default function Home(){
 				setIsLoadingEmailCheck(false)
 				setTimeout(() =>  setResMsg(''), 2000)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 
 	}
@@ -176,7 +206,13 @@ export default function Home(){
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(dados)
-		}).then(res=> res.json()).then(json => {
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then(json => {
 			if(json.auth){
 				setWasChcked(true)
 				navigate(`/admin/auth/recover?q=${email}`)
@@ -186,6 +222,8 @@ export default function Home(){
 				setWasChcked(false)
 				setTimeout(() => setResMsg(""), 3000)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -304,12 +342,13 @@ export default function Home(){
 						<div>
 							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
 								<p>Foto de perfil</p>
-								<FaUserCircle/>
+								<FaUserCircle color={selectedFile ? '#04D939' : ''}/>
 							</label>
 							<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
 						</div>
 						<Button isLoading={isLoading} isBlue={true} value="Sign Up"/>
 					</div>
+					<button onClick={()=>hanldeClearForm()} id="clear-form-btn" className="btn">Limpar</button>
 					{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
 				</form>
 

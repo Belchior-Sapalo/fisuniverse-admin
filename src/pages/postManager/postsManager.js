@@ -45,14 +45,21 @@ export default function PostsManager(){
 	function handleGetAllPosts(){
 		const URL = `${API_URL}/posts`
 		fetch(URL)
-		.then((res)=>res.json())
-		.then((json)=>{
-			if(json.status != 404){
+		.then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then((json)=>{
+			if(json.founded){
 				setHavePostsInDatabase(true)
-				setPostList(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+				setPostList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
 			}else{
 				setHavePostsInDatabase(false)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -104,8 +111,14 @@ export default function PostsManager(){
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(dados)
-		}).then((res)=>res.json()).then((json)=>{
-			if(json.status == 200){
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then((json)=>{
+			if(json.updated){
 				setIsOpen(false)
 				localStorage.setItem('lastMsg', json.msg)
 				utilHanldeReloadWindow(false)
@@ -115,6 +128,8 @@ export default function PostsManager(){
 				setIsAnError(true)
 				setResMsg(json.msg)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
     }
 
@@ -155,8 +170,14 @@ export default function PostsManager(){
 					'Content-type': 'application/json'
 				},
 				body: JSON.stringify(dados)
-			}).then((res)=>res.json()).then((json)=>{
-				if(json.status == 201){
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
+	
+				return res.json()
+			}).then((json)=>{
+				if(json.created){
 					utilHanldeReloadWindow(false)
 					setIsLoading(false)
 					localStorage.setItem('lastMsg', json.msg)
@@ -165,6 +186,8 @@ export default function PostsManager(){
 					setResMsg(json.msg)
 					setIsLoading(false)
 				}
+			}).catch(error => {
+				navigate('/error')
 			})
 		}
 	

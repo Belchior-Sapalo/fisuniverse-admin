@@ -28,6 +28,7 @@ export default function Navbar({CreatePostButton}){
 	const [seeNewPass, setSeeNewPass] = useState(false)
 	const [resMsg, setResMsg] = useState('')
 	const [token, setToken] = useState("")
+	const [updated, setUpdated] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(()=>{
@@ -62,10 +63,15 @@ export default function Navbar({CreatePostButton}){
 				'Authorization': `Bearer ${token}`
 			},
 			body: formData
+		}).then((res)=>{
+			if(res.status == 500){
+				throw new Error('Falha no servidor')
+			}
+
+			return res.json()
 		})
-		.then((res)=>res.json())
 		.then((json)=>{
-			if(json.status == 200){
+			if(json.updated){
 				Cookies.set('adminName', adminNome)
 				Cookies.set('adminEmail', adminEmail)
 				localStorage.setItem('lastMsg', json.msg)
@@ -75,6 +81,8 @@ export default function Navbar({CreatePostButton}){
 				setResMsg(json.msg)
 				setTimeout(()=>{setResMsg("")}, 5000)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -89,17 +97,20 @@ export default function Navbar({CreatePostButton}){
 				headers: {
 					'Authorization': `Bearer ${token}`
 				}
-			})
-			.then((res)=>res.json())
-			.then((json)=>{
-				if(json.status == 200){
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
+
+				return res.json()				
+			}).then(json => {
+				if(json.deleted){
 					utilDeleteAllCookies()
 					setIsLoading(false)
 					window.location.replace('/')
-				}else{
-					setIsLoading(false)
-					setResMsg(json.msg)
 				}
+			}).catch(error => {
+				navigate('/error')
 			})
 		}else{
 			setWasClikedAlready(true)
@@ -289,7 +300,7 @@ export default function Navbar({CreatePostButton}){
 								<div>
 									<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
 										<p>Foto de perfil</p>
-										<FaUserCircle/>
+										<FaUserCircle color={selectedFile ? '#04D939' : ''}/>
 									</label>
 									<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
 								</div>

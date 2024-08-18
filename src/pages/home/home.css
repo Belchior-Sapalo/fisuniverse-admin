@@ -60,6 +60,12 @@
     border-radius: 8px;
 }
 
+#clear-form-btn{
+    color: white;
+    align-self: flex-start;
+    cursor: pointer;
+}
+
 #submit-btn-container{
     width: 100%;
     display: flex;

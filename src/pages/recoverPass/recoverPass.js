@@ -43,8 +43,14 @@ export default function RecoverPass(){
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(dados)
-        }).then((res)=>res.json()).then((json)=>{
-            if(json.status == 200){
+        }).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		}).then((json)=>{
+            if(json.recovered){
                 setResMsg(json.msg)
                 setIsLoading(false)
                 setWasRecovered(true)
@@ -53,7 +59,8 @@ export default function RecoverPass(){
                 setIsLoading(false)
                 setTimeout(()=> setResMsg(''), 3000)
             }
-
+        }).catch(error => {
+            navigate('/error')
         })
     }
 

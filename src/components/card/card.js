@@ -19,13 +19,17 @@ export default function Card({title, autor, ano, editora, description, id, EdBtn
 				headers: {
 					'Authorization': `Bearer ${token}`
 				}
-			})
-			.then((res)=>res.json())
-			.then((json)=>{
-				if(json.status == 200){
-					reload(false)
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
+
+				return res.json()
+			}).then((json)=>{
+				if(json.deleted){
+					handleReloadWindow(false)
 				}else{
-					reload(true)
+					handleReloadWindow(true)
 				}
 				localStorage.setItem('lastMsg', json.msg)
 			})
@@ -42,7 +46,7 @@ export default function Card({title, autor, ano, editora, description, id, EdBtn
 		)
 	}
 
-    function reload(isAnError){
+    function handleReloadWindow(isAnError){
 		localStorage.setItem('reloaded', 'true')
         localStorage.setItem('isAnError', isAnError)
 		document.location.reload()

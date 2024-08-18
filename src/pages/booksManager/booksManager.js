@@ -29,6 +29,7 @@ export default function BooksManager(){
 	const [isAnError, setIsAnError] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const location = useLocation()
+	const navigate = useNavigate()
 	const maxLength = 250;
 	const API_URL = "http://localhost:8000"
 
@@ -41,14 +42,22 @@ export default function BooksManager(){
 	function handleGetAllBooks(){
 		const URL = `${API_URL}/books`
 		fetch(URL)
-		.then((res)=>res.json())
+		.then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+
+            return res.json()
+		})
 		.then((json)=>{
-			if(json.status != 404){
-				setBooksList(json.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+			if(json.founded){
+				setBooksList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
 				setHavebooksInDatabase(true)
 			}else{
 				setHavebooksInDatabase(false)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
 	}
 
@@ -92,17 +101,22 @@ export default function BooksManager(){
 			headers: {
 				'Authorization': `Bearer ${token}`
 			}
-		}).then(res => res.json()).then(json => {
-			if(json.status == 500 || json.status == 404 || json.status == 400 || json.status == 401){
-				setIsAnErrorMessage(true)
-				setIsLoading(false)
-				setResMsg(json.msg)
-			}else{
+		}).then((res)=>{
+			if(res.status == 500){
+                throw new Error('Falha no servidor')
+            }
+            return res.json()
+		}).then(json => {
+			if(json.updated){
 				setIsLoading(false)
 				handleReloadWindow(false)
 				localStorage.setItem('lastMsg', json.msg)
 				utilHandleClearStates()
+			}else{
+				handleReloadWindow(true)
 			}
+		}).catch(error => {
+			navigate('/error')
 		})
     }
 
@@ -155,15 +169,23 @@ export default function BooksManager(){
 				headers: {
 					'Authorization': `Bearer ${token}`
 				}
-			}).then(res => res.json()).then(json => {
-				if(json.status == 500 || json.status == 400 || json.status == 401){
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
+
+				return res.json()
+			}).then(json => {
+				if(json.created){
+					localStorage.setItem('lastMsg', json.msg)
+					handleReloadWindow(false)
+					utilHandleClearStates()
+				}else{
 					setIsAnErrorMessage(true)
 					setResMsg(json.msg)
-				}else{
-				 	handleReloadWindow(false)
-					localStorage.setItem('lastMsg', json.msg)
-					utilHandleClearStates()
 				}
+			}).catch(error => {
+				navigate('/error')
 			})
 		}
 		
@@ -186,7 +208,7 @@ export default function BooksManager(){
 							<div>
 								<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
 									<p>Capa do livro</p>
-									<FaImage/>
+									<FaImage color={selectedFile ? '#04D939' : ''}/>
 								</label>
 								<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
 							</div>
@@ -207,6 +229,7 @@ export default function BooksManager(){
 		setEditora('')
 		setDescription('')
 		setLink('')
+		setSelectedFile(null)
 	}
 
 	function handleReloadWindow(isAnError){
@@ -246,7 +269,7 @@ export default function BooksManager(){
 						<div>
 							<label id="choise-file-btn" className="btn btn-dark" for="profile-picture">
 								<p>Capa do livro</p>
-								<FaImage/>
+								<FaImage color={selectedFile ? '#04D939' : ''}/>
 							</label>
 							<input type="file" onChange={handleFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
 						</div>
