@@ -77,7 +77,7 @@ export default function Home(){
 			method: 'POST',
 			body: formData
 		}).then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -112,7 +112,7 @@ export default function Home(){
 			},
 			body: JSON.stringify(dados)
 		}).then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -174,7 +174,7 @@ export default function Home(){
 			},
 			body: JSON.stringify(dados)
 		}).then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -216,7 +216,7 @@ export default function Home(){
 			},
 			body: JSON.stringify(dados)
 		}).then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 

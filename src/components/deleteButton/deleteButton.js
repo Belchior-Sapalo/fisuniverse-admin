@@ -9,7 +9,6 @@ export default function DeleteBtn({endPoint}) {
     const [wasClikedAlready, setWasClikedAlready] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 	const [token, setToken] = useState('')
-    const [deleted, setDeleted] = useState(false)
     
     useEffect(()=>{
         setToken(Cookies.get('token'))
@@ -25,14 +24,13 @@ export default function DeleteBtn({endPoint}) {
                     'Authorization': `Bearer ${token}`
                 }
             }).then((res)=>{
-                if(res.status == 500){
+                if(res.status === 500){
                     throw new Error('Falha no servidor')
                 }
 
                 return res.json()
             }).then((json)=>{
                 if(json.deleted){
-                    setDeleted(true)
                     handleReloadWindow(false)
                 }else{
                     handleReloadWindow(true)

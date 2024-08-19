@@ -1,7 +1,6 @@
 import React from "react";
-import '../footer/footer.css'
-import {FaFacebook, FaInstagram, FaTelegram} from 'react-icons/fa'
-import {Link, useNavigate} from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import '../footer/footer.css';
 import Logo from "../logo/logo";
 
 
@@ -16,7 +15,7 @@ export default function Footer(){
                  </div>
                 <div className="info-area">
                     <p> &copy; 2024 Belchior Cassumba Sapalo</p>
-                    <p> Imagem por <a target="_blank" href="https://www.vecteezy.com">Vecteezy.com</a> </p>
+                    <p> Imagem por <a target="_blank" rel="noreferrer" href="https://www.vecteezy.com">Vecteezy.com</a> </p>
                 </div>
             </div>
         </footer>

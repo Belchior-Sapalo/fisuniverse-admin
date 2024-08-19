@@ -1,14 +1,14 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { FaBars, FaEye, FaEyeSlash, FaUserCircle } from 'react-icons/fa';
-import { MdAddLink, MdError, MdClose, MdLogout, MdPostAdd } from "react-icons/md";
+import { MdClose, MdError } from "react-icons/md";
 import { NavLink, useNavigate } from 'react-router-dom';
 import Modal from "../../components/modal/modal";
 import Button from "../../components/submitButton/submitButton";
+import { API_URL } from "../globalVarables/variaveis";
+import Logo from '../logo/logo';
 import '../navbar/navbar.css';
 import SidebarItem from "../sidebaritem/sidebarItem";
-import Logo from '../logo/logo'
-import { API_URL } from "../globalVarables/variaveis";
 
 export default function Navbar({CreatePostButton}){
 	const [visible, setVisible] = useState(false)
@@ -68,7 +68,7 @@ export default function Navbar({CreatePostButton}){
 				},
 				body: formData
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 
@@ -109,7 +109,7 @@ export default function Navbar({CreatePostButton}){
 					'Authorization': `Bearer ${token}`
 				}
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 
@@ -228,12 +228,12 @@ export default function Navbar({CreatePostButton}){
 						{CreatePostButton}
 					</div>
 					<div id="go-to-profile-container">
-						<img onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile-btn" style={{width: "45px", height: '45px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
+						<img  alt="abrir perfil" onClick={() => setOpenProfile(prev => !prev)} id="go-to-profile-btn" style={{width: "45px", height: '45px'}} src={`${API_URL}/admin/get-picture/${adminId}`}>
 						</img>
 					</div>
 					<Modal isOpen={openProfile} setIsOpen={()=>{utilHandleCloseProfile()}}>
 						<div id="profile-container">
-							<img onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`${API_URL}/admin/get-picture/${adminId}`}>
+							<img alt="foto de perfil" onClick={() => setOpenProfile(prev => !prev)} id="profile-photo" src={`${API_URL}/admin/get-picture/${adminId}`}>
 							</img>
 							{LogoutButton()}
 							<div id="profile-more-info">

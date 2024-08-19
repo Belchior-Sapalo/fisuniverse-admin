@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FaImage } from "react-icons/fa";
 import { MdAdd } from "react-icons/md";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Card from "../../components/card/card";
 import { API_URL } from "../../components/globalVarables/variaveis";
 import Message from "../../components/message/message";
@@ -36,22 +36,15 @@ export default function BooksManager(){
 	const [isAnError, setIsAnError] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingBooks, setIsLoadingBooks] = useState(false)
-	const location = useLocation()
 	const navigate = useNavigate()
 	const maxLength = 250;
 
-	useEffect(()=>{
-		handleShowMessageToUser()
-		handleGetAllBooks()
-		setToken(Cookies.get('token'))
-	}, [])
-
-	function handleGetAllBooks(){
+	const handleGetAllBooks = useCallback(() => {
 		setIsLoadingBooks(true)
 		const URL = `${API_URL}/books`
 		fetch(URL)
 		.then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -69,7 +62,13 @@ export default function BooksManager(){
 		}).catch(error => {
 			navigate('/error')
 		})
-	}
+	}, [navigate])
+
+	useEffect(()=>{
+		handleShowMessageToUser()
+		handleGetAllBooks()
+		setToken(Cookies.get('token'))
+	}, [handleGetAllBooks])
 
 	function handleShowMessageToUser(){
 		if(localStorage.getItem("reloaded") === 'true'){
@@ -118,7 +117,7 @@ export default function BooksManager(){
 					'Authorization': `Bearer ${token}`
 				}
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 				return res.json()
@@ -166,7 +165,7 @@ export default function BooksManager(){
 		const [selectedFile, setSelectedFile] = useState(null)
 	    const [previwUrl, setPreviwUrl] = useState(null)
 		const [isAnErrorMessage, setIsAnErrorMessage] = useState(false)
-		const [isLoading, setIsLoading] = useState(false)
+		const [isLoading] = useState(false)
 		const maxLength = 250;
 
 		function hanldeClearForm(){
@@ -212,7 +211,7 @@ export default function BooksManager(){
 					'Authorization': `Bearer ${token}`
 				}
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 

@@ -19,7 +19,7 @@ export default function Card({title, autor, ano, editora, description, id, EdBtn
 					'Authorization': `Bearer ${token}`
 				}
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 

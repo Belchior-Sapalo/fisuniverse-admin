@@ -1,7 +1,6 @@
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from 'date-fns/locale'
-import Cookies from 'js-cookie'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaArrowLeft } from 'react-icons/fa'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import DeleteButton from '../../components/deleteButton/deleteButton'
@@ -15,7 +14,6 @@ export default function PostAndComments(){
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const [post, setPost] = useState({})
-    const [token, setToken] = useState(null)
     const [resMsg, setResMsg] = useState('')
     const [comments, setComments] = useState([])
 	const [showMsg, setShowMsg] = useState(false)
@@ -29,18 +27,12 @@ export default function PostAndComments(){
         navigate(-1)
     }
 
-    useEffect(()=>{
-        hanldeGetPostById()
-        handleShowMessageToUser()
-        setToken(Cookies.get('token'))
-    },[])
-
-    function hanldeGetPostById(){
+    const hanldeGetPostById = useCallback(() => {
         setIsLoadingPost(true)
         setIsLoadingComments(true)
         const URL = `${API_URL}/post/${q}`
         fetch(URL).then((res)=>{
-            if(res.status == 500){
+            if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -50,7 +42,7 @@ export default function PostAndComments(){
             if(json.founded){
                 setPost(json.post);
                 setIsLoadingPost(false)
-                if(json.comments.length != 0){
+                if(json.comments.length !== 0){
                     setComments(json.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
                     setHaveComments(true)
                     setIsLoadingComments(false)
@@ -62,7 +54,12 @@ export default function PostAndComments(){
         }).catch(error => {
             navigate('/error')
         })
-    }
+    }, [navigate, q])
+
+    useEffect(()=>{
+        hanldeGetPostById()
+        handleShowMessageToUser()
+    },[hanldeGetPostById, navigate, q])
 
     function utilHandleFormateData(data){
 		let createdAt = data;
@@ -117,7 +114,7 @@ export default function PostAndComments(){
                         {post.content}
                     </div>
                     {
-                        post.anexo && <a className="anexo" href={post.anexo} target="_blank">{post.anexo}</a>
+                        post.anexo && <a className="anexo" href={post.anexo} target="_blank" rel="noreferrer">{post.anexo}</a>
 		           }
                 </div>
             }

@@ -94,8 +94,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    align-items: start;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
     padding: 0;
 }
 
@@ -107,6 +107,8 @@
     border: 1px solid rgba(0, 0, 0, 0.236);
     padding: 4px;
     min-width: fit-content;
+    min-width: -moz-fit-content;
+    min-width: -webkit-fill-available
 }
 
 @media (max-width: 575.98px){

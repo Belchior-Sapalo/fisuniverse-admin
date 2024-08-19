@@ -22,7 +22,7 @@
 #message-content{
     transition: var(--general-transition);
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     padding-left: 20px;
     align-items: center;
     gap: 10px;

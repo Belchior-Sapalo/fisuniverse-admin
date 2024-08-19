@@ -141,7 +141,7 @@
     border: none;
     width: 90%;
     display: flex;
-    justify-content: end;
+    justify-content: flex-start;
     position: relative;
 	padding: 0;
 }

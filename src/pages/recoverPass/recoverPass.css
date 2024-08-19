@@ -6,6 +6,7 @@
     align-items: center;
     height: 100vh;
     background-color: rgb(0, 0, 0);
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
     background-image: url('../../assets/images/back6.jpeg');
     background-repeat: no-repeat;

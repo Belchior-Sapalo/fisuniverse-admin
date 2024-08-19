@@ -24,7 +24,7 @@ export default function RecoverPass(){
 
     useEffect(()=>{
         setEmail(searchParams.get('q'))
-    }, [])
+    }, [searchParams])
 
     async function handlerRecoverPass(e){
         setIsLoading(true)
@@ -43,7 +43,7 @@ export default function RecoverPass(){
             },
             body: JSON.stringify(dados)
         }).then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 

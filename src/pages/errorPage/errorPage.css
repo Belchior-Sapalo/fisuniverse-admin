@@ -8,7 +8,7 @@
 
 #error-container{
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     padding: 0;
     gap: 8px;
 }

@@ -1,11 +1,11 @@
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaMessage } from 'react-icons/fa6';
 import { MdAdd, MdError } from "react-icons/md";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DeleteButton from '../../components/deleteButton/deleteButton';
 import { API_URL } from "../../components/globalVarables/variaveis";
 import Message from "../../components/message/message";
@@ -33,25 +33,18 @@ export default function PostsManager(){
 	const [isAnError, setIsAnError] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)
 	const maxLength = 350;
-	const location = useLocation()
 	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
 
 	const toggleExpand = () => {
 		setIsExpanded(!isExpanded)
 	}
 
-    useEffect(()=>{
-		handleShowMessageToUser()
-		setToken(Cookies.get('token'))
-		handleGetAllPosts()
-	}, [])
-
-	function handleGetAllPosts(){
+	const handleGetAllPosts = useCallback(() => {
 		setIsLoadingPosts(true)
 		const URL = `${API_URL}/posts`
 		fetch(URL)
 		.then((res)=>{
-			if(res.status == 500){
+			if(res.status === 500){
                 throw new Error('Falha no servidor')
             }
 
@@ -68,8 +61,13 @@ export default function PostsManager(){
 		}).catch(error => {
 			navigate('/error')
 		})
-	}
+	}, [navigate])
 
+    useEffect(()=>{
+		handleShowMessageToUser()
+		setToken(Cookies.get('token'))
+		handleGetAllPosts()
+	}, [handleGetAllPosts])
 
 	function handleShowMessageToUser(){
 		if(localStorage.getItem("reloaded") === 'true'){
@@ -126,7 +124,7 @@ export default function PostsManager(){
 				},
 				body: JSON.stringify(dados)
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 
@@ -189,7 +187,7 @@ export default function PostsManager(){
 				},
 				body: JSON.stringify(dados)
 			}).then((res)=>{
-				if(res.status == 500){
+				if(res.status === 500){
 					throw new Error('Falha no servidor')
 				}
 	
@@ -264,7 +262,7 @@ export default function PostsManager(){
 								<div className="post-content">
 									{ isExpanded ?  post.content : `${post.content.substring(0, maxLength)}...`}
 									{
-                                        post.anexo && <a className="anexo" href={post.anexo} target="_blank">{post.anexo}</a>
+                                        post.anexo && <a className="anexo" href={post.anexo} target="_blank" rel="noreferrer">{post.anexo}</a>
 							       }
 								</div>
 								<div id="post-more-options">
