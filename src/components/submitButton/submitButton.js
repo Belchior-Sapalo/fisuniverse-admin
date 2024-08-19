@@ -1,9 +1,9 @@
 import "./submitButton.css"
 import Loader from "../loader/loader"
- function Button({isLoading, value, isBlue}){
+ function Button({isLoading, value, isBlue, thereWasNoChange}){
     return(
         <button 
-            disabled={isLoading} 
+            disabled={isLoading || thereWasNoChange} 
             className={isBlue ? 'btn btn-primary submit-btn' : 'btn btn-dark submit-btn'}  
         >
             { 

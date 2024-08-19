@@ -1,10 +1,7 @@
 import { FaArrowLeft } from 'react-icons/fa'
-import { MdError, MdWarning } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import Logo from '../../components/logo/logo'
 import '../errorPage/errorPage.css'
-
-
 
 import React from 'react'
 

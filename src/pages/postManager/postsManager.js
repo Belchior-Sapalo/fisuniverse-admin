@@ -6,12 +6,13 @@ import { FaEdit } from "react-icons/fa";
 import { FaMessage } from 'react-icons/fa6';
 import { MdAdd, MdError } from "react-icons/md";
 import { useLocation, useNavigate } from 'react-router-dom';
-import DeleteButton from '../../components/deleteButton/deleteButton'
+import DeleteButton from '../../components/deleteButton/deleteButton';
+import { API_URL } from "../../components/globalVarables/variaveis";
 import Message from "../../components/message/message";
 import Modal from "../../components/modal/modal";
 import Navbar from "../../components/navbar/navbar";
-import './postsManager.css';
 import Button from "../../components/submitButton/submitButton";
+import './postsManager.css';
 
 export default function PostsManager(){
 	const [postList, setPostList] = useState([])
@@ -21,16 +22,18 @@ export default function PostsManager(){
 	const [postToEdit, setPostToEdit] = useState('')
 	const navigate = useNavigate()
 	const [title, setTitle] = useState('')
+	const [currentAnexo, setCurrentAnexo] = useState('')
+	const [currentContent, setCurrentContent] = useState('')
+	const [currentTitle, setCurrentTitle] = useState('')
 	const [anexo, setAnexo] = useState('')
+	const [content, setContent] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingPosts, setIsLoadingPosts] = useState(false)
-	const [content, setContent] = useState('')
 	const [showMsg, setShowMsg] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)
 	const maxLength = 350;
 	const location = useLocation()
-	const API_URL = "http://localhost:8000"
 	const [havePostsInDatabase, setHavePostsInDatabase] = useState(false);
 
 	const toggleExpand = () => {
@@ -92,49 +95,59 @@ export default function PostsManager(){
 		setIsOpen(true)
 		setPostToEdit(post.id)
 		setTitle(post.title)
+		setCurrentTitle(post.title)
 		setAnexo(post.anexo)
+		setCurrentAnexo(post.anexo)
 		setContent(post.content)
+		setCurrentContent(post.content)
 	}
 
+    function utilThereWasNoChange(){
+		return (title === currentTitle) && (anexo === currentAnexo) && (content === currentContent)
+	}
 
     function handleUpdatePost(e){
-		e.preventDefault()
-		setIsLoading(true)
-        const URL = `${API_URL}/admin/post/update/${postToEdit}`
+		if(!utilThereWasNoChange()){
+			e.preventDefault()
+			setIsLoading(true)
+			const URL = `${API_URL}/admin/post/update/${postToEdit}`
 
-		const dados = {
-			'title': title,
-			'content': content,
-			'anexo' : anexo
-		}
-
-		fetch(URL,{
-			method: 'PUT',
-			headers: {
-				'Authorization': `Bearer ${token}`,
-				'Content-type': 'application/json'
-			},
-			body: JSON.stringify(dados)
-		}).then((res)=>{
-			if(res.status == 500){
-                throw new Error('Falha no servidor')
-            }
-
-            return res.json()
-		}).then((json)=>{
-			if(json.updated){
-				setIsOpen(false)
-				localStorage.setItem('lastMsg', json.msg)
-				utilHanldeReloadWindow(false)
-				utilHandleClearUpdateStates()
-			}else{
-				setIsLoading(false)
-				setIsAnError(true)
-				setResMsg(json.msg)
+			const dados = {
+				'title': title,
+				'content': content,
+				'anexo' : anexo
 			}
-		}).catch(error => {
-			navigate('/error')
-		})
+
+			fetch(URL,{
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(dados)
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
+
+				return res.json()
+			}).then((json)=>{
+				if(json.updated){
+					setIsOpen(false)
+					localStorage.setItem('lastMsg', json.msg)
+					utilHanldeReloadWindow(false)
+					utilHandleClearUpdateStates()
+				}else{
+					setIsLoading(false)
+					setIsAnError(true)
+					setResMsg(json.msg)
+				}
+			}).catch(error => {
+				navigate('/error')
+			})
+		}else{
+			setResMsg('Precisa atualizar algo')
+		}
     }
 
 	function utilHandleClearUpdateStates(){
@@ -165,7 +178,8 @@ export default function PostsManager(){
 	
 			const dados = {
 				'title': title,
-				'content': content
+				'content': content,
+				'anexo' : anexo
 			}
 			fetch(URL, {
 				method: 'POST',
@@ -250,11 +264,8 @@ export default function PostsManager(){
 								<div className="post-content">
 									{ isExpanded ?  post.content : `${post.content.substring(0, maxLength)}...`}
 									{
-										post.anexo ?
-										<a className="anexo" href="#" target="_blank">{post.anexo}</a>:
-										<p></p>
-									}
-									
+                                        post.anexo && <a className="anexo" href={post.anexo} target="_blank">{post.anexo}</a>
+							       }
 								</div>
 								<div id="post-more-options">
 									<button className="btn" onClick={toggleExpand}>{isExpanded ? 'Ver menos' : 'Ver mais'}</button>
@@ -270,7 +281,7 @@ export default function PostsManager(){
 				<input onChange={(e)=>setTitle(e.target.value)} value={title} className="form-posts-page-input" type="text" placeholder="Título"/>
 				<textarea onChange={(e)=>setContent(e.target.value)} value={content} className="form-posts-page-input" type="text" placeholder="Publicação"/>
 				<input onChange={(e)=>setAnexo(e.target.value)} value={anexo} className="form-posts-page-input" type="text" placeholder="Anexo"/>
-				<Button isLoading={isLoading} value="Editar"/>
+				<Button thereWasNoChange={utilThereWasNoChange()} isLoading={isLoading} value="Editar"/>
             </form>
 			{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
         </Modal>

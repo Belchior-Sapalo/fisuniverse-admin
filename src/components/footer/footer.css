@@ -1,0 +1,44 @@
+#footer-container{
+    padding: 20px;
+    background-color: black;
+}
+
+#content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#contact-area{ 
+    margin-bottom: 2px;
+}
+
+.navigate-area{
+    color: rgb(200, 200, 200);
+    display: flex;
+    gap: 8px;
+}
+
+.internal-link{
+    color: rgb(200, 200, 200);
+    text-decoration: none;
+}
+
+.info-area{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.info-area p{
+    color: rgb(200, 200, 200);
+    font-size: 14px;
+    font-family: var(--thin-font);
+}
+
+.info-area p a{
+    color: rgb(200, 200, 200);
+}

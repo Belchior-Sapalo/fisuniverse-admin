@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaUserCircle } from "react-icons/fa";
 import { MdAttachEmail, MdError } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from "../../components/globalVarables/variaveis";
+import Logo from '../../components/logo/logo';
 import Modal from "../../components/modal/modal";
 import Button from '../../components/submitButton/submitButton';
-import Logo from '../../components/logo/logo'
+import defaultPicture from '../../assets/images/default-profile-picture.jpg'
 import '../home/home.css';
 
 export default function Home(){
@@ -14,6 +16,7 @@ export default function Home(){
 	const [resMsg, setResMsg] = useState('')
 	const [nome, setNome] = useState('')
 	const [selectedFile, setSelectedFile] = useState(null)
+	const [previwUrl, setPreviwUrl] = useState(null)
 	const [isOpenAuthForm, setIsOpenAuthForm] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingEmailCheck, setIsLoadingEmailCheck] = useState(false)
@@ -24,7 +27,6 @@ export default function Home(){
 	const [recoverAnswer, setRecoverAnswer] = useState("")
 	const [wasChcked, setWasChcked] = useState(false)
 	const [authOption, setAuthOption] = useState('Sign Up')
-	const API_URL = "http://localhost:8000"
 
 	function utilHandleChangeAuthForm(){
 		if(isOpenAuthForm){
@@ -47,7 +49,12 @@ export default function Home(){
 	}
 
 	const handlerFileChange = (e) => {
-		setSelectedFile(e.target.files[0])
+		const file = e.target.files[0]
+		if(file){
+		   setSelectedFile(file)
+           const url = URL.createObjectURL(file)
+		   setPreviwUrl(url)
+		}
 	}
 
 	const navigate = useNavigate()
@@ -148,6 +155,8 @@ export default function Home(){
 		setRecoverQuestion('')
 		setRecoverAnswer('')
 		setSelectedFile(null)
+		setPreviwUrl(null)
+		URL.revokeObjectURL(previwUrl)
 	}
 
 	function handleVerifyEmail(e){
@@ -348,6 +357,7 @@ export default function Home(){
 						</div>
 						<Button isLoading={isLoading} isBlue={true} value="Sign Up"/>
 					</div>
+					<img src={previwUrl || defaultPicture} alt="pré-visualização" width='150'/> 
 					<button onClick={()=>hanldeClearForm()} id="clear-form-btn" className="btn">Limpar</button>
 					{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
 				</form>

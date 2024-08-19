@@ -1,4 +1,14 @@
-#message-container{
+#message-container-open{
+    margin-top: 0px;
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    z-index: 1;
+    top: 60px;
+}
+
+#message-container-close{
     margin-top: 0px;
     height: 50px;
     position: fixed;
@@ -7,6 +17,7 @@
     z-index: -999;
     top: 60px;
 }
+
 
 #message-content{
     transition: var(--general-transition);
@@ -52,7 +63,7 @@
 }
 
 .message-content-visible-success{
-    background-color: #dbf6a4;
+    background-color: #cfff6e;
     height: 100%;
     position: absolute;
     width: 100%;

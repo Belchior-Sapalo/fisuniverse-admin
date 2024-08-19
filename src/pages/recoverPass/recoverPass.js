@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
+import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa"
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { API_URL } from "../../components/globalVarables/variaveis"
+import Logo from '../../components/logo/logo'
 import Button from '../../components/submitButton/submitButton'
 import './recoverPass.css'
-import Logo from '../../components/logo/logo'
-import { FaArrowLeft } from 'react-icons/fa'
 
 export default function RecoverPass(){
     const [searchParams] = useSearchParams()
@@ -17,7 +17,6 @@ export default function RecoverPass(){
 	const [seeConfirmPass, setSeeConfirmPass] = useState(false)
     const [resMsg, setResMsg] = useState('')
     const [wasRecovered, setWasRecovered] = useState(false)
-	const API_URL = "http://localhost:8000"
     
     function voltar(){
         window.location.replace('/')

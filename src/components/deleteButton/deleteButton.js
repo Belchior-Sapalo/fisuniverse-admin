@@ -3,13 +3,13 @@ import {useState, useEffect} from 'react'
 import { MdDelete, MdError } from "react-icons/md";
 import Cookies from "js-cookie";
 import './deleteButton.css'
+import { API_URL } from '../globalVarables/variaveis';
 
 export default function DeleteBtn({endPoint}) {
     const [wasClikedAlready, setWasClikedAlready] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 	const [token, setToken] = useState('')
     const [deleted, setDeleted] = useState(false)
-	const API_URL = "http://localhost:8000"
     
     useEffect(()=>{
         setToken(Cookies.get('token'))

@@ -8,13 +8,15 @@ import Button from "../../components/submitButton/submitButton";
 import '../navbar/navbar.css';
 import SidebarItem from "../sidebaritem/sidebarItem";
 import Logo from '../logo/logo'
-const API_URL = "http://192.168.56.1:8000"
+import { API_URL } from "../globalVarables/variaveis";
 
 export default function Navbar({CreatePostButton}){
 	const [visible, setVisible] = useState(false)
 	const [adminId, setAdminId] = useState("")
 	const [adminNome, setAdminNome] = useState("")
 	const [adminEmail, setAdminEmail] = useState("")
+	const [currentAdminNome, setCurrentAdminNome] = useState("")
+	const [currentAdminEmail, setCurrentAdminEmail] = useState("")
 	const [adminDate, setAdminDate] = useState("")
 	const [isLoading, setIsLoading] = useState(false)
 	const [updateModalVisible, setUpdateModalVisible] = useState(false)
@@ -28,13 +30,14 @@ export default function Navbar({CreatePostButton}){
 	const [seeNewPass, setSeeNewPass] = useState(false)
 	const [resMsg, setResMsg] = useState('')
 	const [token, setToken] = useState("")
-	const [updated, setUpdated] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(()=>{
 		setAdminId(Cookies.get('adminId'))
 		setAdminNome(Cookies.get('adminName'))
+		setCurrentAdminNome(Cookies.get('adminName'))
 		setAdminEmail(Cookies.get('adminEmail'))
+		setCurrentAdminEmail(Cookies.get('adminEmail'))
 		setAdminDate(Cookies.get('adminDate'))
 		setToken(Cookies.get("token"))
 	}, [])
@@ -46,44 +49,52 @@ export default function Navbar({CreatePostButton}){
 
 	function handleUpdateProfile(e){
 		e.preventDefault()
-		setResMsg(null)
-		setIsLoading(true)
-		const URL = `${API_URL}/admin/auth/update/${adminId}`
+		if(!utilThereWasNoChange()){
+			setResMsg(null)
+			setIsLoading(true)
+			const URL = `${API_URL}/admin/auth/update/${adminId}`
 
-		const formData = new FormData()
-		formData.append('nome', adminNome);
-		formData.append('email', adminEmail);
-		formData.append('photo', selectedFile)
-		formData.append('senhaActual', prevSenha)
-		formData.append('senhaNova', newSenha)
+			const formData = new FormData()
+			formData.append('nome', adminNome);
+			formData.append('email', adminEmail);
+			formData.append('photo', selectedFile)
+			formData.append('senhaActual', prevSenha)
+			formData.append('senhaNova', newSenha)
 
-		fetch(URL, {
-			method: 'PUT',
-			headers: {
-				'Authorization': `Bearer ${token}`
-			},
-			body: formData
-		}).then((res)=>{
-			if(res.status == 500){
-				throw new Error('Falha no servidor')
-			}
+			fetch(URL, {
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${token}`
+				},
+				body: formData
+			}).then((res)=>{
+				if(res.status == 500){
+					throw new Error('Falha no servidor')
+				}
 
-			return res.json()
-		})
-		.then((json)=>{
-			if(json.updated){
-				Cookies.set('adminName', adminNome)
-				Cookies.set('adminEmail', adminEmail)
-				localStorage.setItem('lastMsg', json.msg)
-				handleReloadWindow(false)
-			}else{
-				setIsLoading(false)
-				setResMsg(json.msg)
-				setTimeout(()=>{setResMsg("")}, 5000)
-			}
-		}).catch(error => {
-			navigate('/error')
-		})
+				return res.json()
+			})
+			.then((json)=>{
+				if(json.updated){
+					Cookies.set('adminName', adminNome)
+					Cookies.set('adminEmail', adminEmail)
+					localStorage.setItem('lastMsg', json.msg)
+					handleReloadWindow(false)
+				}else{
+					setIsLoading(false)
+					setResMsg(json.msg)
+					setTimeout(()=>{setResMsg("")}, 5000)
+				}
+			}).catch(error => {
+				navigate('/error')
+			})
+		}else{
+			setResMsg('Precisa atualizar alguma informação')
+		}
+	}
+
+	function utilThereWasNoChange(){
+		return (adminNome === currentAdminNome) && (adminEmail === currentAdminEmail) && (prevSenha.length === 0 && newSenha.length === 0) && (selectedFile === null)
 	}
 
 	function handlerDeleteProfile(){
@@ -133,7 +144,7 @@ export default function Navbar({CreatePostButton}){
 			window.location.replace('/')
 		}
 		return(
-			<button className="btn btn-dark" onClick={()=>handleLogoutAdmin()}>Terminar sessão</button>
+			<button className="btn btn-dark mt-2" onClick={()=>handleLogoutAdmin()}>Terminar sessão</button>
 		)
 	}
 
@@ -304,7 +315,7 @@ export default function Navbar({CreatePostButton}){
 									</label>
 									<input type="file" onChange={handlerFileChange} accept=".jpeg, .jpg, .png" id="profile-picture"/>
 								</div>
-								<Button isLoading={isLoading} value="Atualizar"/>
+								<Button thereWasNoChange={utilThereWasNoChange()} isLoading={isLoading} value="Atualizar"/>
 							</div>
 							{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/>{resMsg}</p>}
 						</form>

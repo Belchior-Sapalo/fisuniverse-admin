@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react'
 import { FaArrowLeft } from 'react-icons/fa'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import DeleteButton from '../../components/deleteButton/deleteButton'
+import { API_URL } from "../../components/globalVarables/variaveis"
+import Logo from '../../components/logo/logo'
 import Message from '../../components/message/message'
 import ComentForm from '../../components/postComentForm/comentForm'
-import Logo from '../../components/logo/logo'
 import './postAndComments.css'
 
 export default function PostAndComments(){
@@ -23,7 +24,6 @@ export default function PostAndComments(){
     const [haveComments, setHaveComments] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
     const q = searchParams.get('q')
-    const API_URL = "http://localhost:8000"
 
     function voltar(){
         navigate(-1)
@@ -116,6 +116,9 @@ export default function PostAndComments(){
                     <div className="post-content">
                         {post.content}
                     </div>
+                    {
+                        post.anexo && <a className="anexo" href={post.anexo} target="_blank">{post.anexo}</a>
+		           }
                 </div>
             }
             <ComentForm postId={q}/>

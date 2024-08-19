@@ -1,12 +1,11 @@
+import React, { useState } from 'react'
 import "../card/card.css"
-import React from 'react'
-import {useState} from 'react'
+import { API_URL } from "../globalVarables/variaveis"
 
 export default function Card({title, autor, ano, editora, description, id, EdBtn, token}) {
     const [moreOptionsMsg, setMoreOptionsMsg] = useState("Eliminar")
 	const [wasClikedAlready, setWasClikedAlready] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
-	const API_URL = "http://localhost:8000"
     
     function handlerDeleteBook(){
 		if(wasClikedAlready){

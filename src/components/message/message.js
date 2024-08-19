@@ -6,7 +6,7 @@ export default function Message({isOpen, children, isAnError}) {
     
     if(true){
         return(
-            <div id="message-container">
+            <div id={isOpen ? 'message-container-open' : 'message-container-close'}>
                 {
                     isAnError ? 
                     <div 
