@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/fisuniverse-admin/static/css/main.8782688e.css",
-    "main.js": "/fisuniverse-admin/static/js/main.a5cfb2bc.js",
+    "main.js": "/fisuniverse-admin/static/js/main.2727d17f.js",
     "static/js/453.22b104df.chunk.js": "/fisuniverse-admin/static/js/453.22b104df.chunk.js",
     "static/media/Poppins-Thin.ttf": "/fisuniverse-admin/static/media/Poppins-Thin.c0e3721e5939730f7cf2.ttf",
     "static/media/Poppins-Light.ttf": "/fisuniverse-admin/static/media/Poppins-Light.25b96349cf564e8ba0dc.ttf",
@@ -10,11 +10,11 @@
     "static/media/back6.jpeg": "/fisuniverse-admin/static/media/back6.179f963e6a286d3e72c8.jpeg",
     "index.html": "/fisuniverse-admin/index.html",
     "main.8782688e.css.map": "/fisuniverse-admin/static/css/main.8782688e.css.map",
-    "main.a5cfb2bc.js.map": "/fisuniverse-admin/static/js/main.a5cfb2bc.js.map",
+    "main.2727d17f.js.map": "/fisuniverse-admin/static/js/main.2727d17f.js.map",
     "453.22b104df.chunk.js.map": "/fisuniverse-admin/static/js/453.22b104df.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8782688e.css",
-    "static/js/main.a5cfb2bc.js"
+    "static/js/main.2727d17f.js"
   ]
 }
