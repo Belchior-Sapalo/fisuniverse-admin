@@ -165,7 +165,7 @@ export default function BooksManager(){
 		const [selectedFile, setSelectedFile] = useState(null)
 	    const [previwUrl, setPreviwUrl] = useState(null)
 		const [isAnErrorMessage, setIsAnErrorMessage] = useState(false)
-		const [isLoading] = useState(false)
+		const [isLoading, setIsLoading] = useState(false)
 		const maxLength = 250;
 
 		function hanldeClearForm(){
@@ -190,6 +190,7 @@ export default function BooksManager(){
 		}
 
 		function handleCreateBook(e){
+			setIsLoading(true)
 			e.preventDefault()
 			const id = Cookies.get("adminId")
 			const token = Cookies.get('token')
@@ -218,10 +219,12 @@ export default function BooksManager(){
 				return res.json()
 			}).then(json => {
 				if(json.created){
+					setIsLoading(false)
 					localStorage.setItem('lastMsg', json.msg)
 					handleReloadWindow(false)
 					utilHandleClearStates()
 				}else{
+					setIsLoading(false)
 					setIsAnErrorMessage(true)
 					setResMsg(json.msg)
 					setTimeout(()=>{setResMsg("")}, 3000)

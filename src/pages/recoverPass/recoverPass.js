@@ -124,7 +124,7 @@ export default function RecoverPass(){
                 
                 {
                     wasRecovered ? 
-                    <p onClick={()=>window.location.replace('/')} style={{color: "green", cursor: "pointer"}}>{resMsg}! Iniciar sessão</p>: 
+                    <p onClick={()=>window.location.replace('#/')} style={{color: "green", cursor: "pointer"}}>{resMsg}! Iniciar sessão</p>: 
                     <p onClick={()=>window.location.replace('/')} style={{color: 'red', cursor: "pointer"}}>{resMsg}</p>
                 }
             </form>

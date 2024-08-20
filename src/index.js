@@ -1,31 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import Home from './pages/home/home';
 import './index.css';
-import PostAndComments from './pages/postAndComments/postAndComments';
-import RecoverPass from './pages/recoverPass/recoverPass';
 import BooksManager from './pages/booksManager/booksManager';
-import PostsManager from './pages/postManager/postsManager';
 import ErrorPage from './pages/errorPage/errorPage';
+import Home from './pages/home/home';
+import PostAndComments from './pages/postAndComments/postAndComments';
+import PostsManager from './pages/postManager/postsManager';
+import RecoverPass from './pages/recoverPass/recoverPass';
+import PrivateRoute from './components/privateRoute/privateRoute';
+import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<App/>}>
           <Route path="/" element={<Home/>}/>
-          <Route path="/admin/posts" element={<PostsManager/>}/>
-          <Route path="/admin/books" element={<BooksManager/>}/>
-          <Route path="/post/comments" element={<PostAndComments/>}/>
+          <Route path="/admin/posts" element={<PrivateRoute><PostsManager/></PrivateRoute>}/>
+          <Route path="/admin/books" element={<PrivateRoute><BooksManager/></PrivateRoute>}/>
+          <Route path="/post/comments" element={<PrivateRoute><PostAndComments/></PrivateRoute>}/>
           <Route path="/admin/auth/recover" element={<RecoverPass/>}/>
           <Route path="/error" element={<ErrorPage/>}/>
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
 

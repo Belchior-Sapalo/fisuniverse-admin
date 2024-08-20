@@ -106,9 +106,8 @@
     gap: 8px;
     border: 1px solid rgba(0, 0, 0, 0.236);
     padding: 4px;
-    min-width: fit-content;
-    min-width: -moz-fit-content;
-    min-width: -webkit-fill-available
+    width: 120px;
+    font-size: 14px;
 }
 
 @media (max-width: 575.98px){

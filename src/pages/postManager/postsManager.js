@@ -40,34 +40,34 @@ export default function PostsManager(){
 	}
 
 	const handleGetAllPosts = useCallback(() => {
-		setIsLoadingPosts(true)
-		const URL = `${API_URL}/posts`
-		fetch(URL)
-		.then((res)=>{
-			if(res.status === 500){
-                throw new Error('Falha no servidor')
-            }
+			setIsLoadingPosts(true)
+			const URL = `${API_URL}/posts`
+			fetch(URL)
+			.then((res)=>{
+				if(res.status === 500){
+					throw new Error('Falha no servidor')
+				}
 
-            return res.json()
-		}).then((json)=>{
-			if(json.founded){
-				setHavePostsInDatabase(true)
-				setPostList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
-				setIsLoadingPosts(false)
-			}else{
-				setHavePostsInDatabase(false)
-				setIsLoadingPosts(false)
-			}
-		}).catch(error => {
-			navigate('/error')
-		})
+				return res.json()
+			}).then((json)=>{
+				if(json.founded){
+					setHavePostsInDatabase(true)
+					setPostList(json.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
+					setIsLoadingPosts(false)
+				}else{
+					setHavePostsInDatabase(false)
+					setIsLoadingPosts(false)
+				}
+			}).catch(error => {
+				navigate('/error')
+			})
 	}, [navigate])
 
     useEffect(()=>{
-		handleShowMessageToUser()
 		setToken(Cookies.get('token'))
+		handleShowMessageToUser()
 		handleGetAllPosts()
-	}, [handleGetAllPosts])
+	}, [handleGetAllPosts, navigate])
 
 	function handleShowMessageToUser(){
 		if(localStorage.getItem("reloaded") === 'true'){

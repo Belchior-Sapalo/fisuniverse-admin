@@ -120,7 +120,7 @@ export default function Home(){
 		}).then((json)=>{
 			if(json.logado){
 				utilHandleSaveAdmin(json)
-				window.location.replace('/admin/posts')
+				window.location.replace('#/admin/posts')
 			}else{
 				setResMsg(json.msg)
 			}

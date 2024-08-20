@@ -118,7 +118,7 @@ export default function Navbar({CreatePostButton}){
 				if(json.deleted){
 					utilDeleteAllCookies()
 					setIsLoading(false)
-					window.location.replace('/')
+					window.location.replace('#/')
 				}
 			}).catch(error => {
 				navigate('/error')
@@ -140,8 +140,9 @@ export default function Navbar({CreatePostButton}){
 
 	const LogoutButton = ()=>{
 		function handleLogoutAdmin(){
-			Cookies.remove('token')
-			window.location.replace('/')
+			utilDeleteAllCookies()
+			//window.location.replace('#/')
+			navigate('/')
 		}
 		return(
 			<button className="btn btn-dark mt-2" onClick={()=>handleLogoutAdmin()}>Terminar sessão</button>
