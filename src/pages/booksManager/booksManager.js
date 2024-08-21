@@ -10,6 +10,7 @@ import Modal from "../../components/modal/modal";
 import Navbar from "../../components/navbar/navbar";
 import Button from "../../components/submitButton/submitButton";
 import './booksManager.css';
+import ScrollTop from "../../components/scrollTop/scrollTop";
 
 export default function BooksManager(){
 	const [resMsg, setResMsg] = useState('')
@@ -79,7 +80,7 @@ export default function BooksManager(){
 			}
 			setResMsg(localStorage.getItem("lastMsg"))
 			setShowMsg(true)
-            setTimeout(()=>{setShowMsg(false)}, 3000)
+            setTimeout(()=>{setShowMsg(false)}, 2000)
 			localStorage.removeItem("reloaded")
 			localStorage.removeItem('lastMsg')
 			localStorage.removeItem("isAnError")
@@ -290,6 +291,7 @@ export default function BooksManager(){
 
     return(
         <section id="admin-section-books">
+			<ScrollTop/>
             <Navbar CreatePostButton={CreateBookButton()}/>
             <div id="books-container" className="container-fluid">
 				<Message isOpen={showMsg} isAnError={isAnError}>

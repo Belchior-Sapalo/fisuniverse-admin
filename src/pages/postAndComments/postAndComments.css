@@ -48,6 +48,7 @@
 }
 
 #comements-container{
+    margin: 20px 0;
     height: 250px;
     overflow-y: auto;
     border-top: 1px solid rgba(0, 0, 0, 0.189);
@@ -69,6 +70,25 @@
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.085);
 }
+
+.response-container{
+    padding-left: 10px;
+}
+
+
+.response-container  button{
+    font-size: 12px;
+    padding: 2px;
+}
+
+.response-container p{
+    margin: 0;
+}
+
+.response-container .admin{
+
+}
+
 .name_delete{
     display: flex;
     justify-content: space-between;

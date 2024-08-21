@@ -13,6 +13,7 @@ import Modal from "../../components/modal/modal";
 import Navbar from "../../components/navbar/navbar";
 import Button from "../../components/submitButton/submitButton";
 import './postsManager.css';
+import ScrollTop from "../../components/scrollTop/scrollTop";
 
 export default function PostsManager(){
 	const [postList, setPostList] = useState([])
@@ -78,7 +79,7 @@ export default function PostsManager(){
 			}
 			setResMsg(localStorage.getItem("lastMsg"))
 			setShowMsg(true)
-            setTimeout(()=>{setShowMsg(false); setResMsg('')}, 3000)
+            setTimeout(()=>{setShowMsg(false); setResMsg('')}, 2000)
 			localStorage.removeItem("reloaded")
 			localStorage.removeItem('lastMsg')
 			localStorage.removeItem("isAnError")
@@ -230,6 +231,7 @@ export default function PostsManager(){
 
     return(
         <section id="admin-section-posts">
+			<ScrollTop/>
 			<Navbar CreatePostButton={CreatePostButton()}/>
 
             <div id="posts-container" className="container">
@@ -266,7 +268,7 @@ export default function PostsManager(){
 							       }
 								</div>
 								<div id="post-more-options">
-									<button className="btn" onClick={toggleExpand}>{isExpanded ? 'Ver menos' : 'Ver mais'}</button>
+									<button className="btn p-0 pt-2 pb-2" onClick={toggleExpand}>{isExpanded ? 'Ver menos' : 'Ver mais'}</button>
 									<button className="btn ver-coments" onClick={()=>handleSeePostComments(post.id)}><FaMessage color="rgba(0, 0, 0, 0.5)"/> Comentários</button>
 								</div>
 							</div>
@@ -282,7 +284,7 @@ export default function PostsManager(){
 				<Button thereWasNoChange={utilThereWasNoChange()} isLoading={isLoading} value="Editar"/>
             </form>
 			{resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
-        </Modal>
+        </Modal> 
         </section>
     )
 }

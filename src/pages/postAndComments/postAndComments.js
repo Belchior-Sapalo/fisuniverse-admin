@@ -1,18 +1,24 @@
-import { formatDistanceToNow } from "date-fns"
-import { ptBR } from 'date-fns/locale'
-import { useCallback, useEffect, useState } from 'react'
-import { FaArrowLeft } from 'react-icons/fa'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import DeleteButton from '../../components/deleteButton/deleteButton'
-import { API_URL } from "../../components/globalVarables/variaveis"
-import Logo from '../../components/logo/logo'
-import Message from '../../components/message/message'
-import ComentForm from '../../components/postComentForm/comentForm'
-import './postAndComments.css'
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from 'date-fns/locale';
+import { useCallback, useEffect, useState } from 'react';
+import { FaArrowLeft } from 'react-icons/fa';
+import { MdError } from "react-icons/md";
+import Cookies from "js-cookie";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import DeleteButton from '../../components/deleteButton/deleteButton';
+import { API_URL } from "../../components/globalVarables/variaveis";
+import Logo from '../../components/logo/logo';
+import Message from '../../components/message/message';
+import Modal from "../../components/modal/modal";
+import ComentForm from '../../components/postComentForm/comentForm';
+import ScrollTop from "../../components/scrollTop/scrollTop";
+import './postAndComments.css';
 
 export default function PostAndComments(){
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
+	const [token, setToken] = useState('')
+    const [commentId, setCommentId] = useState('')
     const [post, setPost] = useState({})
     const [resMsg, setResMsg] = useState('')
     const [comments, setComments] = useState([])
@@ -22,6 +28,7 @@ export default function PostAndComments(){
     const [haveComments, setHaveComments] = useState(false)
 	const [isAnError, setIsAnError] = useState(false)
     const q = searchParams.get('q')
+	const [isOpen, setIsOpen] = useState(false)
 
     function voltar(){
         navigate(-1)
@@ -57,6 +64,7 @@ export default function PostAndComments(){
     }, [navigate, q])
 
     useEffect(()=>{
+		setToken(Cookies.get('token'))
         hanldeGetPostById()
         handleShowMessageToUser()
     },[hanldeGetPostById, navigate, q])
@@ -94,8 +102,43 @@ export default function PostAndComments(){
 		)
 	}
 
+    function utilOpenModal(commentId){
+        setCommentId(commentId)
+        setIsOpen(true)
+    }
+
+    function hanldeDeleteCommentResponse(commentId){
+		const URL = `${API_URL}/admin/post/comment/response/${commentId}`
+
+		const dados = {
+			'response': null
+		}
+
+		fetch(URL, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-type': 'application/json'
+			},
+			body: JSON.stringify(dados)
+		}).then((res)=>{
+			if(res.status === 500){
+				throw new Error('Falha no servidor')
+			}
+
+			return res.json()
+		}).then(json => {
+			if(json.updated){
+				window.location.reload()
+			}
+		}).catch(error => {
+			navigate("/error")
+		})
+	}
+
     return(
         <div className="OnePost container">
+            <ScrollTop/>
             <Header/>
             <Message isOpen={showMsg} isAnError={isAnError}>
 				<h5>{resMsg}</h5>
@@ -118,7 +161,7 @@ export default function PostAndComments(){
 		           }
                 </div>
             }
-            <ComentForm postId={q}/>
+            {/* <ComentForm postId={q}/> */}
             <div id="comements-container">
                 {
                     haveComments ? comments.map(coment => {
@@ -126,7 +169,7 @@ export default function PostAndComments(){
                             <div className="coment">
                                 <div className='coment-header'>
                                     <div className='coment_info'>
-                                        <p className="coment-email">{coment.email}</p>
+                                        <p className="coment-email">{coment.autor}</p>
                                         <p className="coment-data">{utilHandleFormateData(coment.createdAt)}</p>
                                     </div>
                                     <DeleteButton endPoint={`admin/post/comment/delete/${coment.id}`}/>
@@ -134,11 +177,29 @@ export default function PostAndComments(){
                                 <div className='coment-content-container'>
                                     <p className="coment-content">{coment.content}</p>
                                 </div>
+                                <div className="response-container">
+                                    {
+                                        coment.response ? 
+                                        <div>
+                                            <p className="admin">@Administardor</p>
+                                            <p>{coment.response}</p>
+                                            <button onClick={() => hanldeDeleteCommentResponse(coment.id)} className="btn btn-danger">Eliminar</button>
+
+                                        </div> : 
+                                        <div>
+                                            <button onClick={() => utilOpenModal(coment.id)} className="btn btn-primary">Responder</button>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         )
                         }): isLoadingComments ? <p>Buscando comentários...</p> : <p>Sem comentários</p>
                 }
             </div>
+            <Modal isOpen={isOpen} setIsOpen={()=>setIsOpen(!isOpen)}>
+                <ComentForm commentId={commentId} token={token}/>
+                {resMsg && <p className="text-center auth-res"><MdError size={20} color="red"/> {resMsg}</p>}
+            </Modal> 
         </div>
     )
 }
